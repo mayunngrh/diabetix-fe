@@ -3,12 +3,15 @@ package com.example.diabetix.component
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +27,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -73,7 +77,7 @@ fun HintPasswordField(
         if (value.isEmpty()) {
             color = NetralNormal
             Text(
-                modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
+                modifier = Modifier.padding(vertical = 20.dp, horizontal = 24.dp),
                 text = hint,
                 style = CustomTheme.typography.p2,
                 color = NetralNormal,
@@ -87,12 +91,13 @@ fun HintPasswordField(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
-                .padding(vertical = 16.dp, horizontal = 24.dp)
+                .padding(vertical = 20.dp, horizontal = 24.dp),
         ) {
             BasicTextField(
                 modifier = Modifier
+                    .height(60.dp)
                     .weight(1f)
-                    .height(60.dp),
+                    .align(Alignment.CenterVertically),
                 value = value,
                 onValueChange = onValueChange,
                 maxLines = 1,
@@ -108,6 +113,7 @@ fun HintPasswordField(
             AsyncImage(
                 modifier = Modifier
                     .fillMaxHeight()
+                    .wrapContentWidth()
                     .clickable { showPassword = !showPassword },
                 model = icon, contentDescription = "Icon Show Password"
             )

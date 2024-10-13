@@ -12,10 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.diabetix.presentation.forgot_password.ForgotPassword
 import com.example.diabetix.presentation.login.LoginScreen
+import com.example.diabetix.presentation.new_password.NewPasswordScreen
 import com.example.diabetix.presentation.on_boarding.OnBoardingScreen
+import com.example.diabetix.presentation.personalization.PersonalizationScreen
 import com.example.diabetix.presentation.register.RegisterScreen
 import com.example.diabetix.presentation.splash.SplashScreen
+import com.example.diabetix.presentation.verification.VerificationScreen
 import com.example.diabetix.ui.theme.DiabetixTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    RegisterScreen(rememberNavController())
+                    PersonalizationScreen(rememberNavController())
                 }
             }
         }

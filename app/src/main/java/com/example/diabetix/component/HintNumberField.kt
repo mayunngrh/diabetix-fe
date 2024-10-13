@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.diabetix.ui.theme.CustomTheme
@@ -26,13 +27,13 @@ import com.example.diabetix.ui.theme.MontserratFontFamily
 import com.example.diabetix.ui.theme.NetralNormal
 
 @Composable
-fun HintTextField(
+fun HintNumberField(
     hint: String,
     onValueChange: (String) -> Unit,
     value: String,
 ) {
     var color by remember{
-      mutableStateOf(NetralNormal)
+        mutableStateOf(NetralNormal)
     }
     Box(
         modifier = Modifier
@@ -62,6 +63,9 @@ fun HintTextField(
             value = value,
             onValueChange = onValueChange,
             maxLines = 1,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number
+            ),
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 16.sp,
@@ -69,8 +73,6 @@ fun HintTextField(
                 fontWeight = FontWeight.SemiBold,
                 color = GreenNormal
             ),
-
-
-        )
+            )
     }
 }
