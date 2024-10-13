@@ -74,8 +74,8 @@ fun VerificationScreen(
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-        
-        OTPInputField(otp = otp, onOtpChange = {otp=it})
+
+        OTPInputField(otp = otp, onOtpChange = { otp = it })
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -98,7 +98,9 @@ fun VerificationScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        MyButton(modifier = Modifier.padding(horizontal = 24.dp), onClick = { /*TODO*/ }, text = "Verifikasi")
+        MyButton(modifier = Modifier.padding(horizontal = 24.dp), onClick = {
+            navController.navigate("personalization")
+        }, text = "Verifikasi")
 
         Spacer(modifier = Modifier.height(64.dp))
 

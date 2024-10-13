@@ -60,6 +60,6 @@ fun NewPasswordScreen(
 
         Spacer(modifier = Modifier.height(48.dp))
 
-        MyButton(modifier = Modifier, onClick = { /*TODO*/ }, text = "Kirim Email")
+        MyButton(modifier = Modifier, onClick = { navController.navigate("login")}, text = "Perbarui Kata Sandi")
     }
 }

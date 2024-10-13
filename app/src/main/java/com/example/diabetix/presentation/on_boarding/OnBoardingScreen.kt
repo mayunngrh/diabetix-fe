@@ -73,7 +73,9 @@ fun OnBoardingScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            MyButton(modifier = Modifier, onClick = { /*TODO*/ }, text = "Mulai Sekarang")
+            MyButton(modifier = Modifier, onClick = {
+                navController.navigate("login")
+            }, text = "Mulai Sekarang")
         }
     }
 }

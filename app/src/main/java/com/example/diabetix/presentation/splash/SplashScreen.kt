@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,11 +24,18 @@ import coil.compose.AsyncImage
 import com.example.diabetix.R
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenNormal
+import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
     navController: NavController
 ) {
+    LaunchedEffect(Unit) {
+        delay(4000)
+
+        navController.navigate("on_boarding")
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

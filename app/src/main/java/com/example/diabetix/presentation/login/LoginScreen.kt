@@ -62,7 +62,7 @@ fun LoginScreen(
 
         Text(
             modifier = Modifier.clickable {
-                //DO SOMETHING
+                navController.navigate("forgot_password")
             },
             text = "Lupa Password?",
             style = CustomTheme.typography.p3,
@@ -72,12 +72,14 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(56.dp))
 
-        MyButton(modifier = Modifier, onClick = { /*TODO*/ }, text = "Masuk")
+        MyButton(modifier = Modifier, onClick = {
+            navController.navigate("personalization")
+        }, text = "Masuk")
 
         Spacer(modifier = Modifier.height(24.dp))
 
         GoogleButton(modifier = Modifier, onClick = {
-
+            navController.navigate("personalization")
         })
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -90,7 +92,7 @@ fun LoginScreen(
             )
             Text(
                 modifier = Modifier.clickable {
-
+                    navController.navigate("register")
                 },
                 text = "Daftar akun",
                 style = CustomTheme.typography.p3,

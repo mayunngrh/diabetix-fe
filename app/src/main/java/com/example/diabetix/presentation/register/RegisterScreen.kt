@@ -64,20 +64,26 @@ fun RegisterScreen(
         )
 
         Spacer(modifier = Modifier.height(28.dp))
-        
-        HintTextField(hint = "Nama", onValueChange = {nama =it}, value = nama )
+
+        HintTextField(hint = "Nama", onValueChange = { nama = it }, value = nama)
         Spacer(modifier = Modifier.height(24.dp))
-        HintDatePicker(hint = "Tanggal Lahir", onValueChange = {tanggal = it}, value = tanggal)
+        HintDatePicker(hint = "Tanggal Lahir", onValueChange = { tanggal = it }, value = tanggal)
         Spacer(modifier = Modifier.height(24.dp))
-        HintTextField(hint = "Email", onValueChange = {email =it}, value = email )
+        HintTextField(hint = "Email", onValueChange = { email = it }, value = email)
         Spacer(modifier = Modifier.height(24.dp))
-        HintPasswordField(hint = "Kata Sandi", onValueChange = {pass = it}, value = pass)
+        HintPasswordField(hint = "Kata Sandi", onValueChange = { pass = it }, value = pass)
         Spacer(modifier = Modifier.height(24.dp))
-        HintPasswordField(hint = "Konfirmasi Kata Sandi", onValueChange = {confPass = it}, value = confPass)
+        HintPasswordField(
+            hint = "Konfirmasi Kata Sandi",
+            onValueChange = { confPass = it },
+            value = confPass
+        )
 
 
         Spacer(modifier = Modifier.height(36.dp))
-        MyButton(modifier = Modifier, onClick = { /*TODO*/ }, text = "Daftar")
+        MyButton(modifier = Modifier, onClick = {
+            navController.navigate("verification")
+        }, text = "Daftar")
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -89,7 +95,7 @@ fun RegisterScreen(
             )
             Text(
                 modifier = Modifier.clickable {
-
+                    navController.navigate("login")
                 },
                 text = "Masuk",
                 style = CustomTheme.typography.p3,
