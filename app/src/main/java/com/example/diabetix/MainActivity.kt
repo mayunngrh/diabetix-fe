@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.diabetix.presentation.forgot_password.ForgotPassword
+import com.example.diabetix.presentation.homepage.HomepageScreen
 import com.example.diabetix.presentation.login.LoginScreen
 import com.example.diabetix.presentation.new_password.NewPasswordScreen
 import com.example.diabetix.presentation.on_boarding.OnBoardingScreen
@@ -46,7 +47,6 @@ class MainActivity : ComponentActivity() {
                 destination?.route.let {
                     viewModel.currentRoute.value = it.toString()
 
-
                     ///UPDATE
                     when (it) {
                         "beranda", "history", "profile" -> viewModel.showBottomBar.value =
@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     //BUAT BUTTOM BAR
                 ) {
-                    NavHost(navController = navController, startDestination = "splash") {
+                    NavHost(navController = navController, startDestination = "homepage") {
                         composable("splash"){
                             SplashScreen(navController = navController)
                         }
@@ -85,6 +85,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("new_password"){
                             NewPasswordScreen(navController = navController)
+                        }
+                        composable("homepage") {
+                            HomepageScreen(navController = navController)
                         }
                     }
                 }
