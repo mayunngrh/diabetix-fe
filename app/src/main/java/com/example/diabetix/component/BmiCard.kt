@@ -104,9 +104,3 @@ fun BmiCard(
         }
     }
 }
-
-@Preview
-@Composable
-fun test(){
-    BmiCard()
-}
