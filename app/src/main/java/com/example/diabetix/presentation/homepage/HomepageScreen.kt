@@ -180,7 +180,10 @@ fun HomepageScreen(
                     modifier = Modifier
                         .size(64.dp)
                         .clip(CircleShape)
-                        .background(GreenNormal),
+                        .background(GreenNormal)
+                        .clickable {
+                                   navController.navigate("analyze_page")
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     AsyncImage(model = R.drawable.ic_pindai, contentDescription = "Pindai Makanan")

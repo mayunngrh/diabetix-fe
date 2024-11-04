@@ -1,6 +1,7 @@
 package com.example.diabetix
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -44,6 +45,7 @@ import com.example.diabetix.ui.theme.DiabetixTheme
 import com.example.diabetix.ui.theme.GreenNormal
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material3.Icon
+import com.example.diabetix.presentation.analyze_page.AnalyzePageScreen
 import com.example.diabetix.presentation.article.ArticlePage
 import com.example.diabetix.presentation.consultation.ConsultationPage
 import com.example.diabetix.presentation.profile.ProfilePage
@@ -133,7 +135,7 @@ class MainActivity : ComponentActivity() {
                                             tint = if (viewModel.currentRoute.value == "consultation") GreenNormal else NetralNormal
                                         )
                                         Text(
-                                            text = "Home",
+                                            text = "Consultation",
                                             style = CustomTheme.typography.p4,
                                             color = if (viewModel.currentRoute.value == "consultation") GreenNormal else NetralNormal
                                         )
@@ -157,7 +159,7 @@ class MainActivity : ComponentActivity() {
                                             tint = if (viewModel.currentRoute.value == "article") GreenNormal else NetralNormal
                                         )
                                         Text(
-                                            text = "Home",
+                                            text = "Article",
                                             style = CustomTheme.typography.p4,
                                             color = if (viewModel.currentRoute.value == "article") GreenNormal else NetralNormal
                                         )
@@ -181,7 +183,7 @@ class MainActivity : ComponentActivity() {
                                             tint = if (viewModel.currentRoute.value == "profile") GreenNormal else NetralNormal
                                         )
                                         Text(
-                                            text = "Home",
+                                            text = "Profile",
                                             style = CustomTheme.typography.p4,
                                             color = if (viewModel.currentRoute.value == "profile") GreenNormal else NetralNormal
                                         )
@@ -191,7 +193,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    NavHost(navController = navController, startDestination = "homepage") {
+                    NavHost(navController = navController, startDestination = "analyze_page") {
                         composable("splash") {
                             SplashScreen(navController = navController)
                         }
@@ -229,9 +231,13 @@ class MainActivity : ComponentActivity() {
                             ProfilePage(navController = navController)
                         }
 
+                        composable("analyze_page"){
+                                AnalyzePageScreen(navController = navController)
+                            }
+                        }
+
                     }
                 }
             }
         }
     }
-}
