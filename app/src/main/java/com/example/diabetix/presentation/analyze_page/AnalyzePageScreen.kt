@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -39,6 +40,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 
 @Composable
 fun AnalyzePageScreen(navController: NavController) {
@@ -50,9 +53,9 @@ fun AnalyzePageScreen(navController: NavController) {
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
             if (success && photoUri != null) {
-                // Load the image when the photo is captured
+
                 loadImage(context, photoUri!!) { bitmap ->
-                    imageBitmap = bitmap // Update the state with the loaded bitmap
+                    imageBitmap = bitmap
                 }
             }
         }
@@ -78,7 +81,7 @@ fun AnalyzePageScreen(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
+                .height(450.dp)
                 .padding(24.dp)
                 .clip(RoundedCornerShape(24.dp))
         ) {
@@ -99,7 +102,17 @@ fun AnalyzePageScreen(navController: NavController) {
 
         MyButton(
             modifier = Modifier.padding(horizontal = 24.dp),
-            onClick = { /* TODO: Implement analysis logic */ },
+            onClick = {
+                if (imageBitmap != null) {
+                    val imagePath = saveBitmapToCache(context, imageBitmap!!)
+                    if (imagePath != null) {
+                        val encodedImagePath = Uri.encode(imagePath)
+                        navController.navigate("analyze_result/$encodedImagePath")
+                    }
+                } else {
+                    Toast.makeText(context, "Mohon foto makanan anda terlebih dahulu!", Toast.LENGTH_SHORT).show()
+                }
+            },
             text = "Analisis"
         )
         MyOutlinedButton(
@@ -143,5 +156,19 @@ private suspend fun loadImageFromUri(context: Context, uri: Uri): Bitmap? {
             e.printStackTrace()
             null
         }
+    }
+}
+
+private fun saveBitmapToCache(context: Context, bitmap: Bitmap): String? {
+    val cacheDir = context.cacheDir
+    val file = File(cacheDir, "analyze_image_${System.currentTimeMillis()}.png")
+    return try {
+        FileOutputStream(file).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+        }
+        file.absolutePath
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
 }

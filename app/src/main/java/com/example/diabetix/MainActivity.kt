@@ -45,7 +45,9 @@ import com.example.diabetix.ui.theme.DiabetixTheme
 import com.example.diabetix.ui.theme.GreenNormal
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material3.Icon
+import coil.imageLoader
 import com.example.diabetix.presentation.analyze_page.AnalyzePageScreen
+import com.example.diabetix.presentation.analyze_result.AnalyzeResultScreen
 import com.example.diabetix.presentation.article.ArticlePage
 import com.example.diabetix.presentation.consultation.ConsultationPage
 import com.example.diabetix.presentation.profile.ProfilePage
@@ -234,6 +236,13 @@ class MainActivity : ComponentActivity() {
                         composable("analyze_page"){
                                 AnalyzePageScreen(navController = navController)
                             }
+                        composable("analyze_result/{imagePath}") { backStackEntry ->
+                            val encodedImagePath = backStackEntry.arguments?.getString("imagePath")
+                            val imagePath = encodedImagePath?.let { Uri.decode(it) }
+                            if (imagePath != null) {
+                                AnalyzeResultScreen(navController = navController, imagePath = imagePath)
+                            }
+                        }
                         }
 
                     }
