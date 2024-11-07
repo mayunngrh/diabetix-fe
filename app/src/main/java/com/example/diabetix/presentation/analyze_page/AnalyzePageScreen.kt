@@ -126,11 +126,10 @@ private fun createImageUri(context: Context): Uri {
 }
 
 private fun loadImage(context: Context, uri: Uri, onBitmapLoaded: (Bitmap?) -> Unit) {
-    // Launch a coroutine to load the image
     CoroutineScope(Dispatchers.IO).launch {
         val bitmap = loadImageFromUri(context, uri)
         withContext(Dispatchers.Main) {
-            onBitmapLoaded(bitmap) // Pass the loaded bitmap back to the UI
+            onBitmapLoaded(bitmap)
         }
     }
 }

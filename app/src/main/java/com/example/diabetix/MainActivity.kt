@@ -193,7 +193,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    NavHost(navController = navController, startDestination = "analyze_page") {
+                    NavHost(navController = navController, startDestination = "homepage") {
                         composable("splash") {
                             SplashScreen(navController = navController)
                         }
