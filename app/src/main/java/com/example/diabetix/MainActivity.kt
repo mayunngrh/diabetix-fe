@@ -50,6 +50,7 @@ import com.example.diabetix.presentation.analyze_page.AnalyzePageScreen
 import com.example.diabetix.presentation.analyze_result.AnalyzeResultScreen
 import com.example.diabetix.presentation.article.ArticlePage
 import com.example.diabetix.presentation.consultation.ConsultationPage
+import com.example.diabetix.presentation.daily_sugar.DailySugarScreen
 import com.example.diabetix.presentation.profile.ProfilePage
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.NetralNormal
@@ -195,7 +196,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    NavHost(navController = navController, startDestination = "homepage") {
+                    NavHost(navController = navController, startDestination = "daily_sugar") {
                         composable("splash") {
                             SplashScreen(navController = navController)
                         }
@@ -242,6 +243,10 @@ class MainActivity : ComponentActivity() {
                             if (imagePath != null) {
                                 AnalyzeResultScreen(navController = navController, imagePath = imagePath)
                             }
+                        }
+
+                        composable("daily_sugar"){
+                            DailySugarScreen(navController = navController)
                         }
                         }
 
