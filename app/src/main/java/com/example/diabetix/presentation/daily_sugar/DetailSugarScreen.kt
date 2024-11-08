@@ -89,7 +89,7 @@ fun DetailSugarScreen() {
         Text(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left,
-            text = "Makan Hari ini",
+            text = "Makanan Hari ini",
             style = CustomTheme.typography.p2,
             fontWeight = FontWeight.Bold
         )
@@ -97,7 +97,7 @@ fun DetailSugarScreen() {
         Spacer(modifier = Modifier.height(12.dp))
 
 
-        //MAKAN HARI INI ITEM
+        //MAKANAN HARI INI ITEM
         MakanHariIniItem()
         MakanHariIniItem()
         MakanHariIniItem()

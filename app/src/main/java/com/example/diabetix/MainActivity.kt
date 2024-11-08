@@ -46,6 +46,7 @@ import com.example.diabetix.ui.theme.GreenNormal
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material3.Icon
 import coil.imageLoader
+import com.example.diabetix.presentation.add_bmi.AddBmi
 import com.example.diabetix.presentation.analyze_page.AnalyzePageScreen
 import com.example.diabetix.presentation.analyze_result.AnalyzeResultScreen
 import com.example.diabetix.presentation.article.ArticlePage
@@ -83,7 +84,7 @@ class MainActivity : ComponentActivity() {
 
                     ///UPDATE
                     when (it) {
-                        "homepage", "consultation","article", "profile" -> viewModel.showBottomBar.value =
+                        "homepage", "consultation", "article", "profile" -> viewModel.showBottomBar.value =
                             true
 
                         else -> viewModel.showBottomBar.value = false
@@ -91,7 +92,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            DiabetixTheme(darkTheme = false){
+            DiabetixTheme(darkTheme = false) {
                 Scaffold(
                     bottomBar = {
                         if (viewModel.showBottomBar.value) {
@@ -197,7 +198,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    NavHost(navController = navController, startDestination = "bmi") {
+                    NavHost(navController = navController, startDestination = "add_bmi") {
                         composable("splash") {
                             SplashScreen(navController = navController)
                         }
@@ -235,28 +236,35 @@ class MainActivity : ComponentActivity() {
                             ProfilePage(navController = navController)
                         }
 
-                        composable("analyze_page"){
-                                AnalyzePageScreen(navController = navController)
-                            }
+                        composable("analyze_page") {
+                            AnalyzePageScreen(navController = navController)
+                        }
                         composable("analyze_result/{imagePath}") { backStackEntry ->
                             val encodedImagePath = backStackEntry.arguments?.getString("imagePath")
                             val imagePath = encodedImagePath?.let { Uri.decode(it) }
                             if (imagePath != null) {
-                                AnalyzeResultScreen(navController = navController, imagePath = imagePath)
+                                AnalyzeResultScreen(
+                                    navController = navController,
+                                    imagePath = imagePath
+                                )
                             }
                         }
 
-                        composable("daily_sugar"){
+                        composable("daily_sugar") {
                             DailySugarScreen(navController = navController)
                         }
 
-                        composable("bmi"){
+                        composable("bmi") {
                             BmiScreen(navController = navController)
                         }
+                        composable("add_bmi") {
+                            AddBmi(navController = navController)
                         }
 
                     }
+
                 }
             }
         }
     }
+}

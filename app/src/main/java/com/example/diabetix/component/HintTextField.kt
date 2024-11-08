@@ -69,8 +69,6 @@ fun HintTextField(
                 fontWeight = FontWeight.SemiBold,
                 color = GreenNormal
             ),
-
-
         )
     }
 }
