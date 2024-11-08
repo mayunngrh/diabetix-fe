@@ -48,7 +48,7 @@ fun MakanHariIniItem(){
         Row {
             //Foto Makanan
             AsyncImage(
-                modifier = Modifier.width(130.dp),
+                modifier = Modifier.width(120.dp),
                 model = R.drawable.dummy_photo_analyze,
                 contentDescription = "",
                 contentScale = ContentScale.Crop
@@ -96,7 +96,7 @@ fun MakanHariIniItem(){
                     // jumlah gula
                     Text(
                         text = "36gr",
-                        style = CustomTheme.typography.p2,
+                        style = CustomTheme.typography.p3,
                     )
                 }
             }

@@ -38,6 +38,16 @@ import com.example.diabetix.ui.theme.GreenNormal
 @Composable
 fun DailySugarScreen(navController: NavController) {
     var selectedTab by remember { mutableStateOf(0) }
+    val dummyDataChart = listOf(
+        Pair("15/9", 70f),
+        Pair("16/9", 65f),
+        Pair("17/9", 55f),
+        Pair("18/9", 85f),
+        Pair("19/9", 80f),
+        Pair("20/9", 60f),
+        Pair("21/9", 45f)
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -112,7 +122,7 @@ fun DailySugarScreen(navController: NavController) {
 
         when (selectedTab) {
             0 -> DetailSugarScreen()
-            1 -> RiwayatSugarScreen()
+            1 -> RiwayatSugarScreen(dummyDataChart)
         }
     }
 }
