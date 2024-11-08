@@ -49,6 +49,7 @@ import coil.imageLoader
 import com.example.diabetix.presentation.analyze_page.AnalyzePageScreen
 import com.example.diabetix.presentation.analyze_result.AnalyzeResultScreen
 import com.example.diabetix.presentation.article.ArticlePage
+import com.example.diabetix.presentation.bmi.BmiScreen
 import com.example.diabetix.presentation.consultation.ConsultationPage
 import com.example.diabetix.presentation.daily_sugar.DailySugarScreen
 import com.example.diabetix.presentation.profile.ProfilePage
@@ -196,7 +197,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    NavHost(navController = navController, startDestination = "daily_sugar") {
+                    NavHost(navController = navController, startDestination = "bmi") {
                         composable("splash") {
                             SplashScreen(navController = navController)
                         }
@@ -247,6 +248,10 @@ class MainActivity : ComponentActivity() {
 
                         composable("daily_sugar"){
                             DailySugarScreen(navController = navController)
+                        }
+
+                        composable("bmi"){
+                            BmiScreen(navController = navController)
                         }
                         }
 
