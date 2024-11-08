@@ -198,7 +198,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    NavHost(navController = navController, startDestination = "add_bmi") {
+                    NavHost(navController = navController, startDestination = "bmi") {
                         composable("splash") {
                             SplashScreen(navController = navController)
                         }
