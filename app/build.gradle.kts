@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.diabetix"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -103,6 +103,19 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.2.2")
     implementation("androidx.camera:camera-lifecycle:1.2.2")
     implementation("androidx.camera:camera-view:1.2.2")
+
+
+    //MARKDOWN TEXT
+    implementation("com.github.jeziellago:compose-markdown:0.5.4")
+
+    //Datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences-core:1.0.0")
+
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+
+    implementation("androidx.activity:activity-compose:1.6.1")
 
     implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.compose.material3:material3-window-size-class:1.3.0")

@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.diabetix.R
@@ -46,6 +47,7 @@ import com.example.diabetix.component.ArticleItem
 import com.example.diabetix.component.BmiCard
 import com.example.diabetix.component.DailySugarCard
 import com.example.diabetix.component.MissionItem
+import com.example.diabetix.presentation.login.LoginViewModel
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLight
 import com.example.diabetix.ui.theme.GreenLightActive
@@ -58,6 +60,9 @@ import com.example.diabetix.ui.theme.YellowNormal
 fun HomepageScreen(
     navController: NavController
 ) {
+
+    val viewModel = hiltViewModel<HomePageViewModel>()
+
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -80,14 +80,17 @@ fun AnalyzeResultScreen(
                 .clip(RoundedCornerShape(24.dp))
         ) {
             image?.let {
-                Image(
-                    bitmap = it.asImageBitmap(),
-                    contentDescription = "Analyzed Image",
-                    modifier = Modifier
+                AsyncImage(modifier = Modifier
                         .fillMaxWidth()
-                        .height(450.dp),
-                    contentScale = ContentScale.Crop
-                )
+                        .height(450.dp), model = R.drawable.dummy_photo_makanan, contentDescription = "")
+//                Image(
+//                    bitmap = it.asImageBitmap(),
+//                    contentDescription = "Analyzed Image",
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(450.dp),
+//                    contentScale = ContentScale.Crop
+//                )
             } ?: Text("Image not available")
         }
 

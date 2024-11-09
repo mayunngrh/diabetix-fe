@@ -11,17 +11,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,16 +38,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.diabetix.component.FrequencySelection
 import com.example.diabetix.component.GenderSelection
 import com.example.diabetix.component.HintNumberField
-import com.example.diabetix.component.HintTextField
 import com.example.diabetix.component.StepIndicator
+import com.example.diabetix.data.request.PersonalizedRequest
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenNormal
 import com.example.diabetix.ui.theme.NetralLightActive
-import com.example.diabetix.ui.theme.NetralNormalActive
+import com.example.diabetix.ui.theme.NetralNormal
+import kotlinx.coroutines.delay
 
 @Composable
 fun PersonalizationScreen(
@@ -67,6 +74,11 @@ fun PersonalizationScreen(
     var weight by remember{
         mutableStateOf("")
     }
+
+    val viewModel = hiltViewModel<PersonalizationViewModel>()
+    val personalizationState by viewModel.personalizationState.collectAsState()
+    val id by viewModel.idFlow.collectAsState(initial = "")
+
 
     println("Nilai age: " +age)
     println("Nilai height: " +height)
@@ -138,6 +150,9 @@ fun PersonalizationScreen(
                             .height(50.dp), onClick = {
                             if (currentStep < 4) {
                                 currentStep++
+                            } else{
+                                val request = PersonalizedRequest(id,gender,age,selectedFrequency.toString())
+                                viewModel.personalized(request)
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -228,6 +243,56 @@ fun PersonalizationScreen(
             }
 
 
+        }
+    }
+
+    //LOADING AND PROSES
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (personalizationState) {
+            is PersonalizationState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(NetralNormal.copy(0.4f)), contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = GreenNormal, modifier = Modifier.size(64.dp))
+                }
+
+            }
+
+            is PersonalizationState.Success -> {
+                LaunchedEffect(Unit) {
+                    delay(200)
+                    navController.navigate("login")
+                }
+            }
+
+            is PersonalizationState.Error -> {
+                val errorMessage = (personalizationState as PersonalizationState.Error).message
+                AlertDialog(
+                    onDismissRequest = { },
+                    confirmButton = {
+                        Button(
+                            onClick = { viewModel.resetPersonalizationState() },
+                            colors = ButtonDefaults.buttonColors(
+                                GreenNormal
+                            )
+                        ) {
+                            Text("OK")
+                        }
+                    },
+                    title = {
+                        Text(text = "Error")
+                    },
+                    text = {
+                        Text(text = errorMessage ?: "Unknown error occurred.")
+                    }
+                )
+            }
+
+            else -> {
+                //
+            }
         }
     }
 }

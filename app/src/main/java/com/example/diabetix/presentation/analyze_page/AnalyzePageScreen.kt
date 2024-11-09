@@ -2,6 +2,7 @@ package com.example.diabetix.presentation.analyze_page
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -49,6 +50,8 @@ fun AnalyzePageScreen(navController: NavController) {
     var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
     val context = LocalContext.current
 
+
+
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
@@ -60,6 +63,23 @@ fun AnalyzePageScreen(navController: NavController) {
             }
         }
     )
+
+    // Camera permission launcher
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                val uri = createImageUri(context)
+                photoUri = uri
+                cameraLauncher.launch(uri)
+            } else {
+                Toast.makeText(context, "Camera permission is required to take photos", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+
+
 
     Column(Modifier.fillMaxSize()) {
         Box(
@@ -118,9 +138,16 @@ fun AnalyzePageScreen(navController: NavController) {
         MyOutlinedButton(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
             onClick = {
-                val uri = createImageUri(context)
-                photoUri = uri // Store the URI
-                cameraLauncher.launch(uri)
+                if (androidx.core.content.ContextCompat.checkSelfPermission(
+                        context, android.Manifest.permission.CAMERA
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    val uri = createImageUri(context)
+                    photoUri = uri
+                    cameraLauncher.launch(uri)
+                } else {
+                    cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                }
             },
             text = "Ambil Foto"
         )

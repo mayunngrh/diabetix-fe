@@ -21,10 +21,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.diabetix.R
 import com.example.diabetix.component.MyButton
+import com.example.diabetix.presentation.splash.SplashViewModel
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenNormal
 
@@ -32,6 +34,10 @@ import com.example.diabetix.ui.theme.GreenNormal
 fun OnBoardingScreen(
     navController: NavController
 ) {
+
+    val viewModel = hiltViewModel<OnBoardingViewModel>()
+
+
 
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
         AsyncImage(

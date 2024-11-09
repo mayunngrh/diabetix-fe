@@ -38,6 +38,7 @@ import com.example.diabetix.ui.theme.GreenNormal
 @Composable
 fun DailySugarScreen(navController: NavController) {
     var selectedTab by remember { mutableStateOf(0) }
+
     val dummyDataChart = listOf(
         Pair("15/9", 70f),
         Pair("16/9", 65f),

@@ -54,7 +54,9 @@ import com.example.diabetix.presentation.bmi.BmiScreen
 import com.example.diabetix.presentation.consultation.ConsultationPage
 import com.example.diabetix.presentation.daily_sugar.DailySugarScreen
 import com.example.diabetix.presentation.mission.MissionScreen
+import com.example.diabetix.presentation.mission_detail.MissionDetailScreen
 import com.example.diabetix.presentation.profile.ProfilePage
+import com.example.diabetix.presentation.report.ReportScreen
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.NetralNormal
 import com.example.diabetix.ui.theme.NetralNormalActive
@@ -199,40 +201,51 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    NavHost(navController = navController, startDestination = "mission") {
+                    NavHost(navController = navController, startDestination = "splash") {
                         composable("splash") {
                             SplashScreen(navController = navController)
                         }
+
                         composable("on_boarding") {
                             OnBoardingScreen(navController = navController)
                         }
+
                         composable("login") {
                             LoginScreen(navController = navController)
                         }
+
                         composable("register") {
                             RegisterScreen(navController = navController)
                         }
+
                         composable("verification") {
                             VerificationScreen(navController = navController)
                         }
+
                         composable("personalization") {
                             PersonalizationScreen(navController = navController)
                         }
+
                         composable("forgot_password") {
                             ForgotPassword(navController = navController)
                         }
+
                         composable("new_password") {
                             NewPasswordScreen(navController = navController)
                         }
+
                         composable("homepage") {
                             HomepageScreen(navController = navController)
                         }
+
                         composable("consultation") {
                             ConsultationPage(navController = navController)
                         }
+
                         composable("article") {
                             ArticlePage(navController = navController)
                         }
+
                         composable("profile") {
                             ProfilePage(navController = navController)
                         }
@@ -240,6 +253,7 @@ class MainActivity : ComponentActivity() {
                         composable("analyze_page") {
                             AnalyzePageScreen(navController = navController)
                         }
+
                         composable("analyze_result/{imagePath}") { backStackEntry ->
                             val encodedImagePath = backStackEntry.arguments?.getString("imagePath")
                             val imagePath = encodedImagePath?.let { Uri.decode(it) }
@@ -258,6 +272,7 @@ class MainActivity : ComponentActivity() {
                         composable("bmi") {
                             BmiScreen(navController = navController)
                         }
+
                         composable("add_bmi") {
                             AddBmi(navController = navController)
                         }
@@ -266,8 +281,14 @@ class MainActivity : ComponentActivity() {
                             MissionScreen(navController = navController)
                         }
 
-                    }
+                        composable("report") {
+                            ReportScreen(navController = navController)
+                        }
 
+                        composable("mission_detail") {
+                            MissionDetailScreen(navController = navController)
+                        }
+                    }
                 }
             }
         }
