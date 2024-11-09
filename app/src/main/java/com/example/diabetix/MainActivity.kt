@@ -53,6 +53,7 @@ import com.example.diabetix.presentation.article.ArticlePage
 import com.example.diabetix.presentation.bmi.BmiScreen
 import com.example.diabetix.presentation.consultation.ConsultationPage
 import com.example.diabetix.presentation.daily_sugar.DailySugarScreen
+import com.example.diabetix.presentation.mission.MissionScreen
 import com.example.diabetix.presentation.profile.ProfilePage
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.NetralNormal
@@ -198,7 +199,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    NavHost(navController = navController, startDestination = "bmi") {
+                    NavHost(navController = navController, startDestination = "mission") {
                         composable("splash") {
                             SplashScreen(navController = navController)
                         }
@@ -259,6 +260,10 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("add_bmi") {
                             AddBmi(navController = navController)
+                        }
+
+                        composable("mission") {
+                            MissionScreen(navController = navController)
                         }
 
                     }

@@ -106,7 +106,7 @@ fun BmiScreen(navController: NavController){
                     modifier = Modifier.padding(16.dp),
                     style = CustomTheme.typography.p3,
                     fontWeight = FontWeight.Medium,
-                    color = if (selectedTab == 0) GreenNormal else Color.Black
+                    color = if (selectedTab == 1) GreenNormal else Color.Black
                 )
             }
         }

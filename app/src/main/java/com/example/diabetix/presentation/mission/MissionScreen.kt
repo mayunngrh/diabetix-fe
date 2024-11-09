@@ -1,6 +1,5 @@
-package com.example.diabetix.presentation.daily_sugar
+package com.example.diabetix.presentation.mission
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,38 +25,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import com.example.diabetix.R
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenNormal
 
 @Composable
-fun DailySugarScreen(navController: NavController) {
-    var selectedTab by remember { mutableStateOf(0) }
-    val dummyDataChart = listOf(
-        Pair("15/9", 70f),
-        Pair("16/9", 65f),
-        Pair("17/9", 55f),
-        Pair("18/9", 85f),
-        Pair("19/9", 80f),
-        Pair("20/9", 60f),
-        Pair("21/9", 45f)
-    )
+fun MissionScreen(navController: NavController) {
 
-    Column(
-        modifier = Modifier
+    var selectedTab by remember { mutableStateOf(0) }
+
+
+    Column (
+        Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
+            .verticalScroll(rememberScrollState())) {
+
+        // HEADER BOX (page name & back button)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(130.dp)
-                .background(GreenNormal)
                 .padding(24.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
@@ -67,22 +56,14 @@ fun DailySugarScreen(navController: NavController) {
                     .align(Alignment.BottomStart),
                 imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = "",
-                tint = Color.White
+                tint = GreenNormal
             )
             Text(
                 modifier = Modifier,
-                text = "Gula Harian",
+                text = "Misi",
                 style = CustomTheme.typography.h2,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-
-            AsyncImage(
-                modifier = Modifier
-                    .size(42.dp)
-                    .align(Alignment.BottomEnd),
-                model = R.drawable.ic_add,
-                contentDescription = "",
+                color = GreenNormal
             )
         }
 
@@ -101,7 +82,7 @@ fun DailySugarScreen(navController: NavController) {
         ) {
             Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }) {
                 Text(
-                    "Detail",
+                    "Berlangsung",
                     modifier = Modifier.padding(16.dp),
                     style = CustomTheme.typography.p3,
                     fontWeight = FontWeight.Medium,
@@ -110,7 +91,7 @@ fun DailySugarScreen(navController: NavController) {
             }
             Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }) {
                 Text(
-                    "Riwayat",
+                    "Selesai",
                     modifier = Modifier.padding(16.dp),
                     style = CustomTheme.typography.p3,
                     fontWeight = FontWeight.Medium,
@@ -120,9 +101,11 @@ fun DailySugarScreen(navController: NavController) {
         }
 
 
-        when (selectedTab) {
-            0 -> DetailSugarScreen()
-            1 -> RiwayatSugarScreen(dummyDataChart)
+        when(selectedTab){
+            0-> OnGoingMissionScreen()
+            1-> FinishedMissionScreen()
         }
     }
+
+
 }
