@@ -46,6 +46,7 @@ import com.example.diabetix.ui.theme.GreenNormal
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material3.Icon
 import coil.imageLoader
+import com.example.diabetix.data.FoodNutrition
 import com.example.diabetix.presentation.add_bmi.AddBmi
 import com.example.diabetix.presentation.analyze_page.AnalyzePageScreen
 import com.example.diabetix.presentation.analyze_result.AnalyzeResultScreen
@@ -60,6 +61,7 @@ import com.example.diabetix.presentation.report.ReportScreen
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.NetralNormal
 import com.example.diabetix.ui.theme.NetralNormalActive
+import com.google.gson.Gson
 
 lateinit var navController: NavHostController
 lateinit var viewModel: MainViewModel
@@ -254,13 +256,22 @@ class MainActivity : ComponentActivity() {
                             AnalyzePageScreen(navController = navController)
                         }
 
-                        composable("analyze_result/{imagePath}") { backStackEntry ->
+                        composable("analyze_result/{imagePath}/{nutritionJson}") { backStackEntry ->
                             val encodedImagePath = backStackEntry.arguments?.getString("imagePath")
+                            val encodedNutritionJson = backStackEntry.arguments?.getString("nutritionJson")
+
+                            val nutritionJson = encodedNutritionJson?.let { Uri.decode(it) }
+
+                            val gson = Gson()
+                            val nutrition = gson.fromJson(nutritionJson, FoodNutrition::class.java)
+
+
                             val imagePath = encodedImagePath?.let { Uri.decode(it) }
                             if (imagePath != null) {
                                 AnalyzeResultScreen(
                                     navController = navController,
-                                    imagePath = imagePath
+                                    imagePath = imagePath,
+                                    nutrition = nutrition
                                 )
                             }
                         }

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.dagger.hilt.android") version "2.50"
     id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {

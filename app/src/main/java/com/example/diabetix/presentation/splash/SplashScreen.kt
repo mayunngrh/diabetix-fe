@@ -39,7 +39,11 @@ fun SplashScreen(
     LaunchedEffect(Unit) {
         delay(4000)
         if (isLogin.value){
-            navController.navigate("homepage")
+            navController.navigate("homepage"){
+                popUpTo(navController.currentBackStackEntry?.destination?.route ?: "homepage") {
+                    inclusive = true
+                }
+            }
         } else{
             navController.navigate("on_boarding")
 

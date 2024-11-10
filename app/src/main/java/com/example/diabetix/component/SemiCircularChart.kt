@@ -1,5 +1,6 @@
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -7,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -15,23 +17,36 @@ import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
 import com.example.diabetix.R
 import com.example.diabetix.ui.theme.CustomTheme
+import com.example.diabetix.ui.theme.RedNormal
 
 @Composable
 fun SemiCircularChart(
     currentValue: Int,
     maxValue: Int,
-    progressColor: Color = GreenNormal,
-    backgroundColor: Color = GreenLightHover
 ) {
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.size(220.dp)
     ) {
+        var startAngle = 155f
+        var sweepAngle = 225f
+        var progressColor: Color = GreenNormal
+        var backgroundColor: Color = GreenLightHover
+
+        if (currentValue > maxValue) {
+            startAngle = 155f
+            sweepAngle = 225f
+            progressColor = RedNormal
+        } else {
+
+            startAngle = 155f
+            sweepAngle = 225f * (currentValue / maxValue.toFloat())
+        }
+
+
         // Canvas for drawing the semicircle
         Canvas(modifier = Modifier.size(175.dp)) {
-            val startAngle = 155f
-            val sweepAngle = 225f * (currentValue / maxValue.toFloat())
-
             // Background arc (full semicircle)
             drawArc(
                 color = backgroundColor,
@@ -77,7 +92,12 @@ fun SemiCircularChart(
                     style = CustomTheme.typography.p1,
                     fontWeight = FontWeight.Medium
                 )
-                AsyncImage(modifier = Modifier.size(36.dp),model = R.drawable.ic_chart, contentDescription = "")
+                Icon(
+                    modifier = Modifier.size(36.dp),
+                    painter = painterResource(R.drawable.ic_chart),
+                    contentDescription = "",
+                    tint = progressColor
+                )
                 Text(
                     text = "${maxValue}gr",
                     color = progressColor,

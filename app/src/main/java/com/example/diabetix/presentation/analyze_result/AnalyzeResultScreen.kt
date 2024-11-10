@@ -22,7 +22,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,23 +35,41 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.diabetix.R
 import com.example.diabetix.component.MyButton
+import com.example.diabetix.data.FoodNutrition
+import com.example.diabetix.presentation.login.LoginViewModel
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
 import com.example.diabetix.ui.theme.RedNormal
+import com.example.diabetix.ui.theme.YellowNormal
 
 @Composable
 fun AnalyzeResultScreen(
     navController: NavController,
-    imagePath: String
+    imagePath: String,
+    nutrition: FoodNutrition
 ) {
     val image = remember {
         BitmapFactory.decodeFile(imagePath)
     }
+
+    var levelColor by remember {
+        mutableStateOf(GreenNormal)
+    }
+
+    levelColor = when (nutrition.levelGlucose) {
+        "Gula Tinggi" -> RedNormal
+        "Normal" -> YellowNormal
+        "Gula Rendah" -> GreenNormal
+        else -> GreenNormal
+    }
+
+    val viewModel = hiltViewModel<AnalyzeResultViewModel>()
 
     Column(
         modifier = Modifier
@@ -80,17 +101,14 @@ fun AnalyzeResultScreen(
                 .clip(RoundedCornerShape(24.dp))
         ) {
             image?.let {
-                AsyncImage(modifier = Modifier
+                Image(
+                    bitmap = it.asImageBitmap(),
+                    contentDescription = "Analyzed Image",
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .height(450.dp), model = R.drawable.dummy_photo_makanan, contentDescription = "")
-//                Image(
-//                    bitmap = it.asImageBitmap(),
-//                    contentDescription = "Analyzed Image",
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(450.dp),
-//                    contentScale = ContentScale.Crop
-//                )
+                        .height(450.dp),
+                    contentScale = ContentScale.Crop
+                )
             } ?: Text("Image not available")
         }
 
@@ -118,7 +136,7 @@ fun AnalyzeResultScreen(
                 ) {
                     //NAMA MAKANAN
                     Text(
-                        text = "Donat Cokelat",
+                        text = nutrition.foodName,
                         style = CustomTheme.typography.p3,
                         fontWeight = FontWeight.Bold
                     )
@@ -157,9 +175,10 @@ fun AnalyzeResultScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
                     ) {
+
                         //JUMLAH GULA
                         Text(
-                            text = "36gr",
+                            text = "${nutrition.glucose.toInt()} gr",
                             style = CustomTheme.typography.p3,
                             fontWeight = FontWeight.Bold
                         )
@@ -169,11 +188,12 @@ fun AnalyzeResultScreen(
                                 .height(50.dp)
                                 .width(140.dp)
                                 .clip(RoundedCornerShape(16.dp))
-                                .background(RedNormal),
+                                .background(levelColor),
                             contentAlignment = Alignment.Center
                         ) {
+                            //JUMLAH DALAM GR
                             Text(
-                                text = "Gula Tinggi",
+                                text = nutrition.levelGlucose,
                                 style = CustomTheme.typography.p3,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -223,6 +243,8 @@ fun AnalyzeResultScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Column(modifier = Modifier.padding(16.dp)) {
+
+                        //KALORIIII
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -232,11 +254,13 @@ fun AnalyzeResultScreen(
                         ) {
                             Text(
                                 modifier = Modifier.padding(12.dp),
-                                text = "Kalori : 200-250 kkal",
+                                text = "Kalori : ${nutrition.calories} kkal",
                                 style = CustomTheme.typography.p4
                             )
                         }
 
+
+                        //Lemak Total
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -246,11 +270,12 @@ fun AnalyzeResultScreen(
                         ) {
                             Text(
                                 modifier = Modifier.padding(12.dp),
-                                text = "Kalori : 200-250 kkal",
+                                text = "Lemak total : ${nutrition.fat} kkal",
                                 style = CustomTheme.typography.p4
                             )
                         }
 
+                        //Karbohidrat Total
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -260,10 +285,26 @@ fun AnalyzeResultScreen(
                         ) {
                             Text(
                                 modifier = Modifier.padding(12.dp),
-                                text = "Kalori : 200-250 kkal",
+                                text = "Karbohidrat total : ${nutrition.carbohydrate} kkal",
                                 style = CustomTheme.typography.p4
                             )
                         }
+
+                        //Protein Total
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFFB0E4D3)),
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(12.dp),
+                                text = "Protein : ${nutrition.protein} kkal",
+                                style = CustomTheme.typography.p4
+                            )
+                        }
+
                     }
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -278,7 +319,10 @@ fun AnalyzeResultScreen(
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                SemiCircularChart(currentValue = 64, maxValue = 75)
+                SemiCircularChart(
+                    currentValue = nutrition.currentGlucose.toInt(),
+                    maxValue = nutrition.maxGlucose.toInt()
+                )
             }
 
             //TEXT DIBAWAH GRAFIK
@@ -292,7 +336,6 @@ fun AnalyzeResultScreen(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
-
 
 
             //BOX SARAN
@@ -327,7 +370,7 @@ fun AnalyzeResultScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp),
-                            text = "Apabila kamu mengkonsumsi Donat Cokelat maka gula harianmu akan hampir terpenuhi. Penuhilah gula harianmu dengan makanan yang lebih bergizi!",
+                            text = nutrition.advice,
                             style = CustomTheme.typography.p4,
                             textAlign = TextAlign.Justify
                         )
@@ -348,10 +391,21 @@ fun AnalyzeResultScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 MyButton(modifier = Modifier.weight(1f), onClick = { /*TODO*/ }, text = "YA")
                 Spacer(modifier = Modifier.width(8.dp))
-                MyButton(modifier = Modifier.weight(1f), onClick = { /*TODO*/ }, text = "TIDAK")
+
+
+                MyButton(modifier = Modifier.weight(1f), onClick = {
+                    navController.navigate("homepage"){
+                        popUpTo(navController.currentBackStackEntry?.destination?.route ?: "homepage") {
+                            inclusive = true
+                        }
+                    }
+                }, text = "TIDAK")
             }
         }
         Spacer(modifier = Modifier.height(64.dp))

@@ -18,7 +18,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,15 +35,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.diabetix.R
 import com.example.diabetix.component.MyButton
 import com.example.diabetix.component.MyOutlinedButton
+import com.example.diabetix.data.request.AnalyzeRequest
+import com.example.diabetix.presentation.analyze_result.AnalyzeResultViewModel
+import com.example.diabetix.presentation.analyze_result.AnalyzeViewModel
+import com.example.diabetix.presentation.analyze_result.MyState
+import com.example.diabetix.presentation.login.LoginState
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenNormal
+import com.example.diabetix.ui.theme.NetralNormal
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -49,6 +63,16 @@ fun AnalyzePageScreen(navController: NavController) {
     var photoUri by remember { mutableStateOf<Uri?>(null) }
     var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
     val context = LocalContext.current
+
+    var encodedImagePath by remember { mutableStateOf("") }
+
+
+
+
+    val viewModel = hiltViewModel<AnalyzeViewModel>()
+    val state by viewModel.state.collectAsState()
+    val nutritionJson by viewModel.nutrition.collectAsState()
+
 
 
 
@@ -122,16 +146,17 @@ fun AnalyzePageScreen(navController: NavController) {
 
         MyButton(
             modifier = Modifier.padding(horizontal = 24.dp),
-            onClick = {
+            onClick = {if (state != MyState.Loading) {
                 if (imageBitmap != null) {
                     val imagePath = saveBitmapToCache(context, imageBitmap!!)
                     if (imagePath != null) {
-                        val encodedImagePath = Uri.encode(imagePath)
-                        navController.navigate("analyze_result/$encodedImagePath")
+                        encodedImagePath = Uri.encode(imagePath)
+                        viewModel.analyze(context, imageBitmap!!)
                     }
                 } else {
                     Toast.makeText(context, "Mohon foto makanan anda terlebih dahulu!", Toast.LENGTH_SHORT).show()
                 }
+            }
             },
             text = "Analisis"
         )
@@ -151,6 +176,60 @@ fun AnalyzePageScreen(navController: NavController) {
             },
             text = "Ambil Foto"
         )
+    }
+
+    //LOADING AND PROSES
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (state) {
+            is MyState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(NetralNormal.copy(0.4f)), contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = GreenNormal, modifier = Modifier.size(64.dp))
+                }
+
+            }
+
+            is MyState.Success -> {
+                LaunchedEffect(Unit) {
+                    delay(200)
+                    navController.navigate("analyze_result/$encodedImagePath/$nutritionJson") {
+                        popUpTo(navController.currentBackStackEntry?.destination?.route ?: "homepage") {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+
+            is MyState.Error -> {
+                val errorMessage = (state as MyState.Error).message
+                AlertDialog(
+                    onDismissRequest = { },
+                    confirmButton = {
+                        Button(
+                            onClick = { viewModel.resetState() },
+                            colors = ButtonDefaults.buttonColors(
+                                GreenNormal
+                            )
+                        ) {
+                            Text("OK")
+                        }
+                    },
+                    title = {
+                        Text(text = "Error")
+                    },
+                    text = {
+                        Text(text = errorMessage ?: "Unknown error occurred.")
+                    }
+                )
+            }
+
+            else -> {
+                //
+            }
+        }
     }
 }
 
@@ -191,7 +270,7 @@ private fun saveBitmapToCache(context: Context, bitmap: Bitmap): String? {
     val file = File(cacheDir, "analyze_image_${System.currentTimeMillis()}.png")
     return try {
         FileOutputStream(file).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 40, out)
         }
         file.absolutePath
     } catch (e: Exception) {
