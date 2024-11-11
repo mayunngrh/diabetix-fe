@@ -46,6 +46,7 @@ import com.example.diabetix.ui.theme.GreenNormal
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material3.Icon
 import coil.imageLoader
+import com.example.diabetix.data.Article
 import com.example.diabetix.data.FoodNutrition
 import com.example.diabetix.presentation.add_bmi.AddBmi
 import com.example.diabetix.presentation.analyze_page.AnalyzePageScreen
@@ -55,6 +56,7 @@ import com.example.diabetix.presentation.bmi.BmiScreen
 import com.example.diabetix.presentation.consultation.ConsultationPage
 import com.example.diabetix.presentation.daily_sugar.DailySugarScreen
 import com.example.diabetix.presentation.mission.MissionScreen
+import com.example.diabetix.presentation.mission_detail.ArticleDetailScreen
 import com.example.diabetix.presentation.mission_detail.MissionDetailScreen
 import com.example.diabetix.presentation.profile.ProfilePage
 import com.example.diabetix.presentation.report.ReportScreen
@@ -247,6 +249,24 @@ class MainActivity : ComponentActivity() {
                         composable("article") {
                             ArticlePage(navController = navController)
                         }
+
+                        composable("article_detail/{articleJson}") { backStackEntry ->
+                            val encodedArticleJson = backStackEntry.arguments?.getString("articleJson")
+
+                            val articleJson = encodedArticleJson?.let { Uri.decode(it) }
+
+                            val gson = Gson()
+                            val article = gson.fromJson(articleJson, Article::class.java)
+
+
+                            if (article != null) {
+                                ArticleDetailScreen(navController = navController, article = article)
+                            } else {
+                                Text("Error: Failed to load article.")
+                            }
+                        }
+
+
 
                         composable("profile") {
                             ProfilePage(navController = navController)

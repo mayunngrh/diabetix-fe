@@ -6,13 +6,16 @@ import com.example.diabetix.data.request.PersonalizedRequest
 import com.example.diabetix.data.request.RegisterRequest
 import com.example.diabetix.data.request.VerifyRequest
 import com.example.diabetix.data.response.AnalyzeResponse
+import com.example.diabetix.data.response.ArticlesResponse
 import com.example.diabetix.data.response.LoginResponse
+import com.example.diabetix.data.response.MissionResponse
 import com.example.diabetix.data.response.PersonalizedResponse
 import com.example.diabetix.data.response.RegisterResponse
 import com.example.diabetix.data.response.VerifyResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -48,4 +51,14 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Part foodImage: MultipartBody.Part
     ): Response<AnalyzeResponse>
+
+    @GET("articles")
+    suspend fun getAllArticles(
+        @Header("Authorization") token: String,
+    ): Response<ArticlesResponse>
+
+    @GET("missions")
+    suspend fun getAllMisions(
+        @Header("Authorization") token: String,
+    ): Response<MissionResponse>
 }

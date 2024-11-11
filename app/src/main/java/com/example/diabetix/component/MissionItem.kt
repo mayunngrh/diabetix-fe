@@ -25,15 +25,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.diabetix.R
+import com.example.diabetix.data.Missions
 import com.example.diabetix.ui.theme.CustomTheme
+import com.example.diabetix.ui.theme.GreenNormal
+import com.example.diabetix.ui.theme.NetralNormal
+import com.example.diabetix.ui.theme.RedNormal
 import com.example.diabetix.ui.theme.YellowNormal
 
 @Composable
-fun MissionItem(){
+fun MissionItem(
+    missions: Missions
+){
+
+    val plainText = extractPlainText(missions.mission.body)
+
     ElevatedCard(
         modifier = Modifier
             .width(230.dp)
@@ -59,14 +69,14 @@ fun MissionItem(){
                         .clip(
                             RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                         ),
-                    model = R.drawable.dummy_mission_photo,
+                    model = if(missions.mission.image != "") missions.mission.image else R.drawable.photo_no_article_picture,
                     contentDescription = "Foto misi",
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 //JUDUL
                 Text(
-                    text = "Berenang selama 45 menit",
+                    text = missions.mission.title,
                     style = CustomTheme.typography.p4,
                     fontWeight = FontWeight.Bold
                 )
@@ -74,12 +84,13 @@ fun MissionItem(){
 
                 //DESKRIPSI
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Berenang melatih hampir semua otot tubuh, meningkatkan kekuatan otot, fleksibilitas, serta kebugaran kardiovaskular.",
+                    text = plainText,
                     style = CustomTheme.typography.p4,
-                    fontSize = 9.sp,
-                    textAlign = TextAlign.Justify
-
+                    fontSize = 8.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Justify,
+                    color = NetralNormal
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -95,7 +106,7 @@ fun MissionItem(){
                     Spacer(modifier = Modifier.width(4.dp))
                     //EXP AMOUNT
                     Text(
-                        text = "300",
+                        text = missions.mission.exp.toString(),
                         style = CustomTheme.typography.p3,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -104,12 +115,19 @@ fun MissionItem(){
                         modifier = Modifier
                             .height(30.dp)
                             .clip(CircleShape)
-                            .background(YellowNormal)
+                            .background(
+                                when (missions.mission.category) {
+                                    "Mudah" -> GreenNormal
+                                    "Sedang" -> YellowNormal
+                                    "Berat" -> RedNormal
+                                    else -> GreenNormal
+                                }
+                            )
                         , contentAlignment = Alignment.Center
                     ) {
                         Text(
                             modifier = Modifier.padding(horizontal = 8.dp),
-                            text = "Sedang",
+                            text = missions.mission.category,
                             style = CustomTheme.typography.p4,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White
@@ -121,3 +139,5 @@ fun MissionItem(){
         }
     }
 }
+
+

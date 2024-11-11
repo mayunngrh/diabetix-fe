@@ -1,4 +1,4 @@
-package com.example.diabetix.presentation.homepage
+package com.example.diabetix.presentation.article
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -6,28 +6,19 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.diabetix.data.Article
-import com.example.diabetix.data.Missions
 import com.example.diabetix.data.remote.ApiService
-import com.example.diabetix.data.request.LoginRequest
 import com.example.diabetix.presentation.analyze_result.MyState
-import com.example.diabetix.presentation.login.LoginState
-import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
 
 @HiltViewModel
-class HomePageViewModel @Inject constructor(
+class ArticleViewModel @Inject constructor(
     private val apiService: ApiService,
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
@@ -40,16 +31,11 @@ class HomePageViewModel @Inject constructor(
     private val _articles = MutableStateFlow<List<Article>>(emptyList())
     val articles: StateFlow<List<Article>> = _articles
 
-    private val _missions = MutableStateFlow<List<Missions>>(emptyList())
-    val missions: StateFlow<List<Missions>> = _missions
-
     val token: Flow<String> = dataStore.data
         .map { preferences -> preferences[TOKEN] ?: "" }
 
-
     init {
         fetchArticle()
-        fetchMission()
     }
 
     private fun fetchArticle() {
@@ -80,39 +66,5 @@ class HomePageViewModel @Inject constructor(
     }
 
 
-    private fun fetchMission() {
-        _state.value = MyState.Loading // Set loading state
-        viewModelScope.launch {
-            try {
-
-                val token = token.first()
-
-
-                val response = apiService.getAllMisions("Bearer $token")
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        _state.value = MyState.Success
-                        _missions.value = response.body()!!.missions
-
-                        println("NILAI BODY: " + response.body()!!.missions)
-                        println("NILAI MISI: " + _missions.value)
-                    } ?: run {
-                        _state.value = MyState.Error("Empty response body")
-                    }
-                } else {
-
-                    _state.value = MyState.Error("Fetch Data failed")
-                }
-            } catch (e: Exception) {
-                println("CHECK KONDISI LOGIN: 4")
-                _state.value = MyState.Error(e.message ?: "Unknown error")
-            }
-        }
-    }
-
-
 
 }
-
-
-

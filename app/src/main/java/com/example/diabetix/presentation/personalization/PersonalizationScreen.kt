@@ -151,7 +151,9 @@ fun PersonalizationScreen(
                             if (currentStep < 4) {
                                 currentStep++
                             } else{
-                                val request = PersonalizedRequest(id,gender,age,selectedFrequency.toString())
+                                val ageString = age.replace(" ", "")
+                                val ageInt = ageString.toInt()
+                                val request = PersonalizedRequest(id,gender,ageInt,selectedFrequency.toString())
                                 viewModel.personalized(request)
                             }
                         },

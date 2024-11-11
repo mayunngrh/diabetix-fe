@@ -136,13 +136,9 @@ fun ReportScreen(navController: NavController) {
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())) {
             Spacer(modifier = Modifier.width(12.dp))
-            MissionItem()
-            MissionItem()
-            MissionItem()
-            MissionItem()
-            MissionItem()
-            MissionItem()
-            MissionItem()
+
+            //ADD MISSION ITEM
+
             Spacer(modifier = Modifier.width(12.dp))
         }
 

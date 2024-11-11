@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.diabetix.R
@@ -50,6 +51,7 @@ import com.example.diabetix.component.LinearExpChart
 import com.example.diabetix.component.MyButton
 import com.example.diabetix.component.MyOutlinedButton
 import com.example.diabetix.component.ProfileBoxDisplay
+import com.example.diabetix.presentation.login.LoginViewModel
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
@@ -79,20 +81,16 @@ fun ProfilePage(navController: NavController) {
     var isEdit by remember {
         mutableStateOf(false)
     }
+
+    val viewModel = hiltViewModel<ProfileViewModel>()
+
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(GreenNormal)
     ) {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(top = 200.dp)
-//                .clip(RoundedCornerShape(32.dp))
-//                .background(
-//                    Color.White
-//                )
-//        )
 
 
         Column(
@@ -130,7 +128,7 @@ fun ProfilePage(navController: NavController) {
                     .fillMaxSize()
                     .padding(top = 35.dp),
                 contentAlignment = Alignment.TopCenter
-            ){
+            ) {
 
 
                 Box(
@@ -145,7 +143,10 @@ fun ProfilePage(navController: NavController) {
                     Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 100.dp)) {
 
                         //LEVEL and EXP
-                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             //LEVEL
                             Text(
                                 modifier = Modifier.weight(1f),
@@ -202,51 +203,6 @@ fun ProfilePage(navController: NavController) {
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        //ROW Provinsi
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                modifier = Modifier.width(80.dp),
-                                text = "Provinsi",
-                                style = CustomTheme.typography.p2
-                            )
-
-                            if (isEdit) {
-                                HintTextField(
-                                    hint = "Masukkan Provinsi Asal Anda",
-                                    onValueChange = { province = it },
-                                    value = province
-                                )
-                            } else {
-                                ProfileBoxDisplay(item = province)
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        //ROW Provinsi
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                modifier = Modifier.width(80.dp),
-                                text = "Kota",
-                                style = CustomTheme.typography.p2
-                            )
-
-                            if (isEdit) {
-                                HintTextField(
-                                    hint = "Masukkan Kota Asal Anda",
-                                    onValueChange = { city = it },
-                                    value = city
-                                )
-                            } else {
-                                ProfileBoxDisplay(item = city)
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
 
                         //ROW Email
                         Row(
@@ -281,15 +237,21 @@ fun ProfilePage(navController: NavController) {
                         MyButton(
                             modifier = Modifier,
                             onClick = {
+                                viewModel.logout()
+                                navController.navigate("login"){
+                                    popUpTo(navController.currentBackStackEntry?.destination?.route ?: "splash") {
+                                        inclusive = true
+                                    }
+                                }
                             },
                             text = "Keluar"
                         )
-                        
+
                         Spacer(modifier = Modifier.height(50.dp))
                     }
 
                 }
-                
+
                 //Photo Profile
                 ElevatedCard(
                     modifier = Modifier.size(156.dp),

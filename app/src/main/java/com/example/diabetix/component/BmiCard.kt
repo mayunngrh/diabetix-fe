@@ -1,6 +1,7 @@
 package com.example.diabetix.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,12 +35,13 @@ import com.example.diabetix.ui.theme.NetralNormal
 
 @Composable
 fun BmiCard(
-
+    onClickBMI:()->Unit
 ){
     ElevatedCard(
         modifier = Modifier
             .height(165.dp)
-            .width(160.dp),
+            .width(160.dp)
+            .clickable { onClickBMI() },
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(GreenLight),
         elevation = CardDefaults.cardElevation(8.dp)
