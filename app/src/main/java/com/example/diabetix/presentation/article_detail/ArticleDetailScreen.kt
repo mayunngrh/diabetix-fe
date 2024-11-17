@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -63,135 +64,150 @@ fun ArticleDetailScreen(
     }
 
     val context = LocalContext.current
-    val markDownText =article.body.trimIndent()
+    val markDownText = article.body.trimIndent()
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-
-        //HEADER SECTION
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(130.dp)
-                .padding(24.dp),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .align(Alignment.BottomStart)
-                    .clickable {
-                               navController.navigate("article")
-                    },
-                imageVector = Icons.Default.KeyboardArrowLeft,
-                contentDescription = "",
-                tint = GreenNormal
-            )
-            Text(
-                modifier = Modifier,
-                text = "Detail Artikel",
-                style = CustomTheme.typography.h2,
-                fontWeight = FontWeight.Bold,
-                color = GreenNormal
-            )
-        }
-
-        Column(modifier = Modifier.padding(24.dp)) {
-
-            //FOTO MISI AKTIVITAS
+        Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(250.dp)
-                    .clip(RoundedCornerShape(24.dp)),
-                model = if(article.image != "") article.image else R.drawable.photo_no_article_picture,
-                contentDescription = "",
-                contentScale = ContentScale.Crop
+                    .height(500.dp),
+                model = R.drawable.bg_profile_card,
+                contentScale = ContentScale.Crop,
+                contentDescription = ""
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-
-            //ROW EXP and CALORIES
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                //BOX
+            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
+                //HEADER SECTION
                 Box(
                     modifier = Modifier
-                        .wrapContentSize()
-                        .border(1.dp, GreenNormal, RoundedCornerShape(16.dp)),
-                    contentAlignment = Alignment.Center
+                        .fillMaxWidth()
+                        .height(130.dp)
+                        .padding(vertical = 24.dp),
+                    contentAlignment = Alignment.BottomCenter
                 ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .align(Alignment.BottomStart)
+                            .clickable {
+                                navController.navigate("article")
+                            },
+                        imageVector = Icons.Default.KeyboardArrowLeft,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
                     Text(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        text = article.category,
-                        style = CustomTheme.typography.p4,
-                        color = GreenNormal
+                        modifier = Modifier,
+                        text = "Detail Artikel",
+                        style = CustomTheme.typography.h2,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
                     )
                 }
-                Spacer(modifier = Modifier.width(12.dp))
-                //JUMLAH EXP
-                Text(
-                    text = convertDate,
-                    style = CustomTheme.typography.p4,
-                    fontSize = 12.sp,
 
+                //FOTO MISI AKTIVITAS
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                        .clip(RoundedCornerShape(24.dp)),
+                    model = if (article.image != "") article.image else R.drawable.photo_no_article_picture,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop
                 )
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            Divider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 2.dp,
-                color = GreenNormal
-            )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                //ROW EXP and CALORIES
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    //BOX
+                    Box(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .border(1.dp, GreenNormal, RoundedCornerShape(16.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            text = article.category,
+                            style = CustomTheme.typography.p4,
+                            color = GreenNormal
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    //JUMLAH EXP
+                    Text(
+                        text = convertDate,
+                        style = CustomTheme.typography.p4,
+                        fontSize = 12.sp,
 
-            //JUDUL
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                text = article.title,
-                style = CustomTheme.typography.h2,
-                fontWeight = FontWeight.Bold
-            )
+                        )
+                }
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            MarkdownText(
-                modifier = Modifier.fillMaxSize(), markdown = markDownText,
-                style = CustomTheme.typography.p4
-            )
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 2.dp,
+                    color = GreenNormal
+                )
 
-            Spacer(modifier = Modifier.height(36.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                AsyncImage(modifier=Modifier.size(36.dp) ,model = R.drawable.ic_liked, contentDescription = "")
-
-                Spacer(modifier = Modifier.width(4.dp))
-
+                //JUDUL
                 Text(
-                    text = article.likes.toString(),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = article.title,
                     style = CustomTheme.typography.h2,
-                    color = GreenNormal,
                     fontWeight = FontWeight.Bold
                 )
-            }
 
-            Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+
+                MarkdownText(
+                    modifier = Modifier.fillMaxSize(), markdown = markDownText,
+                    style = CustomTheme.typography.p4
+                )
+
+                Spacer(modifier = Modifier.height(36.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    AsyncImage(
+                        modifier = Modifier.size(36.dp),
+                        model = R.drawable.ic_liked,
+                        contentDescription = ""
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text(
+                        text = article.likes.toString(),
+                        style = CustomTheme.typography.h2,
+                        color = GreenNormal,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(64.dp))
+            }
         }
+
     }
 }
 

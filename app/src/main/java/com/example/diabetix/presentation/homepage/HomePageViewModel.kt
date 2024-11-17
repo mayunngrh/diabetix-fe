@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.diabetix.data.Article
 import com.example.diabetix.data.Missions
+import com.example.diabetix.data.Profile
 import com.example.diabetix.data.remote.ApiService
 import com.example.diabetix.data.request.LoginRequest
 import com.example.diabetix.presentation.analyze_result.MyState
@@ -43,6 +44,9 @@ class HomePageViewModel @Inject constructor(
     private val _missions = MutableStateFlow<List<Missions>>(emptyList())
     val missions: StateFlow<List<Missions>> = _missions
 
+    private val _user = MutableStateFlow<Profile?>(null)
+    val user: StateFlow<Profile?> = _user
+
     val token: Flow<String> = dataStore.data
         .map { preferences -> preferences[TOKEN] ?: "" }
 
@@ -50,7 +54,34 @@ class HomePageViewModel @Inject constructor(
     init {
         fetchArticle()
         fetchMission()
+        fetchUserData()
     }
+
+    private fun fetchUserData() {
+        _state.value = MyState.Loading
+        viewModelScope.launch {
+            try {
+
+                val token = token.first()
+
+                val response = apiService.getUserData("Bearer $token")
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _state.value = MyState.Success
+                        _user.value = response.body()!!.profiles
+                    } ?: run {
+                        _state.value = MyState.Error("Empty response body")
+                    }
+                } else {
+
+                    _state.value = MyState.Error("Fetch USER Data failed")
+                }
+            } catch (e: Exception) {
+                _state.value = MyState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
 
     private fun fetchArticle() {
         _state.value = MyState.Loading // Set loading state
@@ -84,10 +115,7 @@ class HomePageViewModel @Inject constructor(
         _state.value = MyState.Loading // Set loading state
         viewModelScope.launch {
             try {
-
                 val token = token.first()
-
-
                 val response = apiService.getAllMisions("Bearer $token")
                 if (response.isSuccessful) {
                     response.body()?.let {

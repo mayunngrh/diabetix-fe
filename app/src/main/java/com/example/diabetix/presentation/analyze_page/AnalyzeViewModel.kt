@@ -64,7 +64,7 @@ class AnalyzeViewModel @Inject constructor(
         try {
             val tokenValue = token.first()
             val requestFile = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-            val imagePart = MultipartBody.Part.createFormData("Image", imageFile.name, requestFile)
+            val imagePart = MultipartBody.Part.createFormData("foodImage", imageFile.name, requestFile)
 
             val response = withContext(Dispatchers.IO) {
                 apiService.analyze("Bearer $tokenValue", imagePart)
@@ -81,7 +81,7 @@ class AnalyzeViewModel @Inject constructor(
 
                     _state.value = MyState.Success
                 } else {
-                    _state.value = MyState.Error("Request failed")
+                    _state.value = MyState.Error("Request failed, periksa jaringan internet anda!")
                 }
             }
         } catch (e: Exception) {

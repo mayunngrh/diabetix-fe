@@ -47,7 +47,7 @@ class PersonalizationViewModel @Inject constructor(
                         _personalizationState.value = PersonalizationState.Error("Empty response body")
                     }
                 } else {
-                    _personalizationState.value = PersonalizationState.Error("Register failed")
+                    _personalizationState.value = PersonalizationState.Error("Update Data failed")
                 }
             } catch (e: Exception) {
                 _personalizationState.value = PersonalizationState.Error(e.message ?: "Unknown error")

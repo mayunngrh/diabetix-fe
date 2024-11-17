@@ -46,8 +46,10 @@ import com.example.diabetix.ui.theme.GreenNormal
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material3.Icon
 import coil.imageLoader
+import com.example.diabetix.component.DoctorItem
 import com.example.diabetix.data.Article
 import com.example.diabetix.data.FoodNutrition
+import com.example.diabetix.data.Missions
 import com.example.diabetix.presentation.add_bmi.AddBmi
 import com.example.diabetix.presentation.analyze_page.AnalyzePageScreen
 import com.example.diabetix.presentation.analyze_result.AnalyzeResultScreen
@@ -55,6 +57,7 @@ import com.example.diabetix.presentation.article.ArticlePage
 import com.example.diabetix.presentation.bmi.BmiScreen
 import com.example.diabetix.presentation.consultation.ConsultationPage
 import com.example.diabetix.presentation.daily_sugar.DailySugarScreen
+import com.example.diabetix.presentation.doctor_detail.DoctorDetail
 import com.example.diabetix.presentation.mission.MissionScreen
 import com.example.diabetix.presentation.mission_detail.ArticleDetailScreen
 import com.example.diabetix.presentation.mission_detail.MissionDetailScreen
@@ -316,9 +319,21 @@ class MainActivity : ComponentActivity() {
                             ReportScreen(navController = navController)
                         }
 
-                        composable("mission_detail") {
-                            MissionDetailScreen(navController = navController)
+                        composable("mission_detail/{encodeMissionJson}") {
+                            val encodeMissionJson = it.arguments?.getString("encodeMissionJson")
+
+                            val missionJson = encodeMissionJson?.let { Uri.decode(encodeMissionJson) }
+
+                            val gson = Gson()
+                            val mission = gson.fromJson(missionJson, Missions::class.java)
+
+
+                            MissionDetailScreen(navController = navController,mission = mission)
                         }
+                        composable("doctor_detail") {
+                            DoctorDetail()
+                        }
+
                     }
                 }
             }

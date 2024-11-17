@@ -8,9 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,51 +25,60 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.diabetix.data.Tracker
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightHover
+import com.example.diabetix.ui.theme.GreenNormal
 import com.example.diabetix.ui.theme.RedNormal
 
 @Composable
-fun DaftarMakananItem() {
-
+fun DaftarMakananItem(
+    tracker: Tracker
+) {
     Box(
         modifier = Modifier
             .width(250.dp)
-            .wrapContentHeight()
-            .clip(
-                RoundedCornerShape(16.dp)
-            )
-            .background(GreenLightHover),
-        contentAlignment = Alignment.Center
+            .heightIn(min = 100.dp, max = 500.dp) // Set a bounded height
+            .clip(RoundedCornerShape(16.dp))
+            .background(GreenLightHover)
     ) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFFB0E4D3)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "5 September 2024",
-                    style = CustomTheme.typography.p3,
-                    fontWeight = FontWeight.Bold
-                )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Header item (Date)
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(0xFFB0E4D3)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "5 September 2024",
+                        style = CustomTheme.typography.p3,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
             }
-            Spacer(modifier = Modifier.height(12.dp))
 
-            Column(modifier = Modifier.padding(8.dp)) {
-                //BOX MAKANAN ITEM
-                MakananItem()
-                MakananItem()
-                MakananItem()
-                MakananItem()
-                MakananItem()
+            // List of Makanan Items
+            items(tracker.glucoseTrackerDetails) { glucoseTrackerDetail ->
+                MakananItem(glucoseTrackerDetail = glucoseTrackerDetail)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
-                //ROW TOTAL GULA
+            // Total Row
+            item {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End
                 ) {
@@ -75,41 +88,38 @@ fun DaftarMakananItem() {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    //BOX TOTAL GULA
+                    // Box for total glucose
                     Box(
                         modifier = Modifier
                             .height(35.dp)
                             .width(150.dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(RedNormal),
+                            .background(
+                                if (tracker.totalGlucose > 50) RedNormal else GreenNormal
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Row(verticalAlignment = Alignment.Bottom) {
-                            //JUMLAH GULA
+                            // Display total glucose amount
                             Text(
-                                text = "64gr",
+                                text = "${tracker.totalGlucose}gr",
                                 style = CustomTheme.typography.p3,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
-
-                            //Per maximal
+                            // Max glucose
                             Text(
-                                text = "/75gr",
+                                text = "/50gr",
                                 style = CustomTheme.typography.p3,
                                 fontSize = 8.sp,
                                 color = Color.White
                             )
                         }
-
                     }
                 }
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
-        Spacer(modifier = Modifier.height(12.dp))
-
     }
-    Spacer(modifier = Modifier.width(12.dp))
-
-
 }
+

@@ -1,10 +1,12 @@
-package com.example.diabetix.presentation.mission_detail
+package com.example.diabetix.presentation.doctor_detail
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -39,21 +42,17 @@ import com.example.diabetix.R
 import com.example.diabetix.component.MyButton
 import com.example.diabetix.data.Missions
 import com.example.diabetix.ui.theme.CustomTheme
+import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
-
 @Composable
-fun MissionDetailScreen(
-    navController: NavController,
-    mission: Missions
+fun DoctorDetail(
 ) {
-    var isDone by remember {
-        mutableStateOf(false)
-    }
 
     val context = LocalContext.current
-    val markDownText = mission.mission.body.trimIndent()
+    val markDownText =
+        "Dr. Riska Subandono adalah seorang dokter spesialis penyakit dalam yang berpraktik di Rumah Sakit Husada. Dengan keahlian dalam menangani berbagai masalah kesehatan yang berkaitan dengan organ-organ internal, Dr. Riska berdedikasi untuk memberikan perawatan medis yang menyeluruh dan terfokus pada kebutuhan pasien. Berbekal pengalaman dan pengetahuan mendalam di bidang penyakit dalam, beliau senantiasa berupaya memberikan diagnosis yang akurat dan perawatan yang efektif untuk membantu pasien mencapai pemulihan yang optimal.".trimIndent()
 
     Column(
         modifier = Modifier
@@ -79,7 +78,7 @@ fun MissionDetailScreen(
             )
             Text(
                 modifier = Modifier,
-                text = "Detail Misi",
+                text = "Konsultasi",
                 style = CustomTheme.typography.h2,
                 fontWeight = FontWeight.Bold,
                 color = GreenNormal
@@ -93,8 +92,8 @@ fun MissionDetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)
-                    .clip(RoundedCornerShape(24.dp)),
-                model = if(mission.mission.image != "") mission.mission.image else R.drawable.dummy_photo_mission,
+                    .clip(RoundedCornerShape(16.dp)),
+                model = R.drawable.dummy_doctor_photo,
                 contentDescription = "",
                 contentScale = ContentScale.Crop
             )
@@ -102,51 +101,47 @@ fun MissionDetailScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
 
-            //ROW EXP and CALORIES
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                //ICON EXP
-                AsyncImage(
-                    modifier = Modifier.size(16.dp),
-                    model = R.drawable.ic_exp,
-                    contentDescription = "ICON EXP"
-                )
-
-                //JUMLAH EXP
-                Text(
-                    modifier = Modifier.padding(start = 4.dp, end = 16.dp),
-                    text = mission.mission.exp.toString(),
-                    style = CustomTheme.typography.p4,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-                //JUMLAH CALORIE
-                Text(
-                    modifier = Modifier.padding(start = 4.dp, end = 16.dp),
-                    text = "${mission.mission.calory} kkal",
-                    style = CustomTheme.typography.p4,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-
 
             Spacer(modifier = Modifier.height(24.dp))
 
             //JUDUL
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = mission.mission.title,
-                style = CustomTheme.typography.p1,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            //BOX NAMA MAKANAN
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(GreenLightHover)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .height(50.dp)
+                        .width(200.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(0xFFB0E4D3))
+                        .align(Alignment.CenterEnd),
+                    contentAlignment = Alignment.Center
+                ) {
+                    //NAMA DOKTER
+                    Text(
+                        text = "Dr. Riska Subandono",
+                        style = CustomTheme.typography.p3,
+                        fontWeight = FontWeight.Bold,
+                        color = GreenNormal
+                    )
+                }
+                Row(Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                        text = "Nama Dokter",
+                        style = CustomTheme.typography.p4
+                    )
+                }
+            }
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            //DESKRIPSI
             MarkdownText(
                 modifier = Modifier.fillMaxSize(), markdown = markDownText,
                 style = CustomTheme.typography.p4
@@ -154,37 +149,15 @@ fun MissionDetailScreen(
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    colors = CheckboxDefaults.colors(GreenNormal),
-                    checked = isDone,
-                    onCheckedChange = { isDone = !isDone })
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Saya benar benar telah melakukan kegiatan ini",
-                    style = CustomTheme.typography.p4,
-                )
-            }
 
             Spacer(modifier = Modifier.height(24.dp))
             MyButton(modifier = Modifier, onClick = {
-                if (isDone) {
-                    //DO THE THING
-                } else {
                     Toast.makeText(
                         context,
                         "Silahkan isi kotak centang terlebih dahulu!",
                         Toast.LENGTH_SHORT
                     ).show()
-                }
-
-            }, text = "Selesaikan Misi")
+            }, text = "Reservasi")
             Spacer(modifier = Modifier.height(48.dp))
 
 

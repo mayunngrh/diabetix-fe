@@ -71,8 +71,9 @@ fun HomepageScreen(
     val viewModel = hiltViewModel<HomePageViewModel>()
     val articles by viewModel.articles.collectAsState()
     val misions by viewModel.missions.collectAsState()
+    val user by viewModel.user.collectAsState()
 
-
+    val firstName = user?.name?.split(" ")?.get(0)
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(0.dp)
@@ -105,7 +106,7 @@ fun HomepageScreen(
                             modifier = Modifier
                                 .size(80.dp)
                                 .clip(CircleShape),
-                            model = R.drawable.photo_profile_dummy,
+                            model = R.drawable.vector_profile_dummy,
                             contentDescription = "Foto profil pengguna"
                         )
                         Spacer(modifier = Modifier.width(24.dp))
@@ -116,7 +117,7 @@ fun HomepageScreen(
                                     modifier = Modifier
                                         .weight(1f)
                                         .fillMaxWidth(),
-                                    text = "Halo Indra",
+                                    text = "Halo ${firstName}",
                                     style = CustomTheme.typography.h2,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.White
@@ -144,7 +145,7 @@ fun HomepageScreen(
                                     .background(GreenLightHover), contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "27 Tahun",
+                                    text = "${user?.personalization?.age} Tahun",
                                     style = CustomTheme.typography.p4,
                                     fontWeight = FontWeight.SemiBold,
                                     color = GreenNormal
@@ -271,7 +272,7 @@ fun HomepageScreen(
                     .height(150.dp)
                     .padding(horizontal = 24.dp)
                     .clickable {
-                     navController.navigate("article")
+                        navController.navigate("article")
                     },
                 elevation = CardDefaults.elevatedCardElevation(8.dp),
                 shape = RoundedCornerShape(24.dp)
@@ -371,7 +372,14 @@ fun HomepageScreen(
                 contentPadding = PaddingValues(horizontal = 24.dp)
             ) {
                 items(misions) { mission ->
-                    MissionItem(missions = mission)
+                    MissionItem(missions = mission, onMissionClick = {
+                        val gson = Gson()
+
+                        val missionJson = gson.toJson(mission)
+                        val encodeMissionJson = Uri.encode(missionJson)
+
+                        navController.navigate("mission_detail/$encodeMissionJson")
+                    })
                 }
             }
         }

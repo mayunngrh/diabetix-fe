@@ -395,13 +395,23 @@ fun AnalyzeResultScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                MyButton(modifier = Modifier.weight(1f), onClick = { /*TODO*/ }, text = "YA")
+                MyButton(modifier = Modifier.weight(1f), onClick = {
+                    navController.navigate("homepage") {
+                        popUpTo(
+                            navController.currentBackStackEntry?.destination?.route ?: "homepage"
+                        ) {
+                            inclusive = true
+                        }
+                    }
+                }, text = "YA")
                 Spacer(modifier = Modifier.width(8.dp))
 
 
                 MyButton(modifier = Modifier.weight(1f), onClick = {
-                    navController.navigate("homepage"){
-                        popUpTo(navController.currentBackStackEntry?.destination?.route ?: "homepage") {
+                    navController.navigate("homepage") {
+                        popUpTo(
+                            navController.currentBackStackEntry?.destination?.route ?: "homepage"
+                        ) {
                             inclusive = true
                         }
                     }

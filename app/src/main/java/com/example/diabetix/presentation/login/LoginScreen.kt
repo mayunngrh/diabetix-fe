@@ -1,5 +1,6 @@
 package com.example.diabetix.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,6 +46,7 @@ import kotlinx.coroutines.delay
 fun LoginScreen(
     navController: NavController
 ) {
+    val context = LocalContext.current
     var email by remember {
         mutableStateOf("")
     }
@@ -98,7 +101,11 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         GoogleButton(modifier = Modifier, onClick = {
-            navController.navigate("personalization")
+            Toast.makeText(
+                context,
+                "Sedang dalam tahap pengembangan, silahkan daftar menggunakan email",
+                Toast.LENGTH_SHORT
+            ).show()
         })
 
         Spacer(modifier = Modifier.height(32.dp))

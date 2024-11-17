@@ -19,16 +19,21 @@ import java.time.format.TextStyle
 import java.util.*
 
 @Composable
-fun CalendarView() {
-    val today = LocalDate.now()
-    val startDate = today.minusDays(7)
+fun CalendarView(
+    startDate: String,
+    endDate:String,
+) {
+    val start = startDate.substringBefore("T")
+    val end = endDate.substringBefore("T")
+    val endDate = LocalDate.parse(end)
+    val startDate = LocalDate.parse(start)
 
 Column {
 
     //TANGGAL
     Text(
         text = "${startDate.dayOfMonth} ${startDate.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${startDate.year} - " +
-                "${today.dayOfMonth} ${today.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${today.year}",
+                "${endDate.dayOfMonth} ${endDate.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${endDate.year}",
         style = CustomTheme.typography.p2,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -50,7 +55,7 @@ Column {
 
         // Display month and year
         Text(
-            text = "${today.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${today.year}",
+            text = "${endDate.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${endDate.year}",
             style = CustomTheme.typography.p3,
             fontWeight = FontWeight.Bold
         )
@@ -69,8 +74,8 @@ Column {
         Spacer(modifier = Modifier.height(8.dp))
 
         // Dates in the calendar
-        val daysInMonth = today.lengthOfMonth()
-        val firstDayOfMonth = today.withDayOfMonth(1).dayOfWeek.value % 7
+        val daysInMonth = endDate.lengthOfMonth()
+        val firstDayOfMonth = endDate.withDayOfMonth(1).dayOfWeek.value % 7
 
         // Generate calendar rows
         for (week in 0..5) {
@@ -81,8 +86,8 @@ Column {
                 for (dayOfWeek in 0..6) {
                     val day = week * 7 + dayOfWeek - firstDayOfMonth + 1
                     if (day in 1..daysInMonth) {
-                        val date = today.withDayOfMonth(day)
-                        val isInRange = date in startDate..today
+                        val date = endDate.withDayOfMonth(day)
+                        val isInRange = date in startDate..endDate
 
                         Box(
                             modifier = Modifier

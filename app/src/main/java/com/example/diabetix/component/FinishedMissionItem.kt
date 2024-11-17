@@ -30,20 +30,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.diabetix.R
+import com.example.diabetix.data.Missions
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightActive
 import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
 import com.example.diabetix.ui.theme.NetralNormal
+import com.example.diabetix.ui.theme.RedNormal
+import com.example.diabetix.ui.theme.YellowNormal
 
 @Composable
-fun FinishedMissionItem() {
+fun FinishedMissionItem(
+    mission: Missions,
+    onMissionClick: () -> Unit
+) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
             .clickable {
-                //DO SOMETHING WHEN CLICK
+                onMissionClick()
             },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.elevatedCardElevation(8.dp),
@@ -64,7 +70,7 @@ fun FinishedMissionItem() {
             ) {
                 AsyncImage(
                     modifier = Modifier.fillMaxSize(),
-                    model = R.drawable.dummy_photo_mission,
+                    model = if(mission.mission.image != "") mission.mission.image else R.drawable.dummy_photo_mission,
                     contentDescription = "",
                     contentScale = ContentScale.Crop
                 )
@@ -75,20 +81,24 @@ fun FinishedMissionItem() {
 
                 //NAMA AKTIVITAS
                 Text(
-                    text = "Jogging Pagi",
+                    text = mission.mission.title,
                     style = CustomTheme.typography.p3,
                     fontWeight = FontWeight.Bold,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(verticalAlignment = Alignment.CenterVertically){
-                    Icon(modifier = Modifier.size(16.dp),painter = painterResource(id = R.drawable.ic_time), contentDescription = "")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(id = R.drawable.ic_time),
+                        contentDescription = ""
+                    )
 
                     //WAKTU AKTIVITAS
                     Text(
                         modifier = Modifier.padding(horizontal = 4.dp),
-                        text = "15 Menit",
+                        text = "${mission.mission.duration} Menit",
                         style = CustomTheme.typography.p4,
                     )
                 }
@@ -104,11 +114,16 @@ fun FinishedMissionItem() {
                             .width(75.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .background(
-                                GreenNormal
+                                when (mission.mission.category) {
+                                    "Mudah" -> GreenNormal
+                                    "Sedang" -> YellowNormal
+                                    "Berat" -> RedNormal
+                                    else -> GreenNormal
+                                }
                             ), contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Mudah",
+                            text = mission.mission.category,
                             style = CustomTheme.typography.p4,
                             fontSize = 11.sp,
                             color = Color.White

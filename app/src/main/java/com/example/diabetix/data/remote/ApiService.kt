@@ -10,7 +10,9 @@ import com.example.diabetix.data.response.ArticlesResponse
 import com.example.diabetix.data.response.LoginResponse
 import com.example.diabetix.data.response.MissionResponse
 import com.example.diabetix.data.response.PersonalizedResponse
+import com.example.diabetix.data.response.ProfileResponse
 import com.example.diabetix.data.response.RegisterResponse
+import com.example.diabetix.data.response.ReportResponse
 import com.example.diabetix.data.response.VerifyResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -23,30 +25,30 @@ import retrofit2.http.Part
 
 interface ApiService {
 
-    @POST("auth/login")
+    @POST("auths/login")
     suspend fun login(
         @Body request: LoginRequest
     ): Response<LoginResponse>
 
 
-    @POST("auth/register")
+    @POST("auths/register")
     suspend fun register(
         @Body request: RegisterRequest
     ): Response<RegisterResponse>
 
-    @POST("auth/verify")
+    @POST("auths/verify")
     suspend fun verify(
         @Body request: VerifyRequest
     ): Response<VerifyResponse>
 
-    @POST("user/personalization")
+    @POST("users/personalization")
     suspend fun personalized(
         @Body request: PersonalizedRequest
     ): Response<PersonalizedResponse>
 
 
     @Multipart
-    @POST("tracker/predict")
+    @POST("trackers/predict")
     suspend fun analyze(
         @Header("Authorization") token: String,
         @Part foodImage: MultipartBody.Part
@@ -61,4 +63,14 @@ interface ApiService {
     suspend fun getAllMisions(
         @Header("Authorization") token: String,
     ): Response<MissionResponse>
+
+    @GET("users/profile")
+    suspend fun getUserData(
+        @Header("Authorization") token: String,
+    ): Response<ProfileResponse>
+
+    @GET("reports")
+    suspend fun getReport(
+        @Header("Authorization") token: String,
+    ): Response<ReportResponse>
 }

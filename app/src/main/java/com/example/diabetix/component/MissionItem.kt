@@ -39,8 +39,9 @@ import com.example.diabetix.ui.theme.YellowNormal
 
 @Composable
 fun MissionItem(
-    missions: Missions
-){
+    missions: Missions,
+    onMissionClick: () -> Unit
+) {
 
     val plainText = extractPlainText(missions.mission.body)
 
@@ -50,7 +51,7 @@ fun MissionItem(
             .height(280.dp)
             .padding(horizontal = 12.dp)
             .clickable {
-                //DO SOMETHING WHEN CLICK
+                onMissionClick()
             },
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.elevatedCardElevation(8.dp)
@@ -69,7 +70,7 @@ fun MissionItem(
                         .clip(
                             RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                         ),
-                    model = if(missions.mission.image != "") missions.mission.image else R.drawable.photo_no_article_picture,
+                    model = if (missions.mission.image != "") missions.mission.image else R.drawable.photo_no_article_picture,
                     contentDescription = "Foto misi",
                     contentScale = ContentScale.Crop
                 )
@@ -122,8 +123,7 @@ fun MissionItem(
                                     "Berat" -> RedNormal
                                     else -> GreenNormal
                                 }
-                            )
-                        , contentAlignment = Alignment.Center
+                            ), contentAlignment = Alignment.Center
                     ) {
                         Text(
                             modifier = Modifier.padding(horizontal = 8.dp),

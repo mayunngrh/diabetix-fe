@@ -153,7 +153,15 @@ fun PersonalizationScreen(
                             } else{
                                 val ageString = age.replace(" ", "")
                                 val ageInt = ageString.toInt()
-                                val request = PersonalizedRequest(id,gender,ageInt,selectedFrequency.toString())
+
+                                val heightString = height.replace(" ", "")
+                                val heightInt = heightString.toInt()
+
+
+                                val weightString = weight.replace(" ", "")
+                                val weightInt = weightString.toInt()
+
+                                val request = PersonalizedRequest(id,gender,ageInt,selectedFrequency.toString(),heightInt, weightInt)
                                 viewModel.personalized(request)
                             }
                         },
