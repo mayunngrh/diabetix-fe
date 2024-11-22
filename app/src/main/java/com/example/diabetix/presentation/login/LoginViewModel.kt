@@ -43,7 +43,7 @@ class LoginViewModel @Inject constructor(
                     response.body()?.let {
                         println("CHECK KONDISI LOGIN: 1")
                         _loginState.value = LoginState.Success
-                        saveToken(response.body()!!.response.token,response.body()!!.response.id)
+                        saveToken(response.body()!!.token,"")
                     // Set success state with response
                     } ?: run {
                         println("CHECK KONDISI LOGIN: 2")

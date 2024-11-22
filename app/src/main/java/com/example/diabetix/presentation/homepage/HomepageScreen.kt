@@ -34,8 +34,12 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,7 +75,10 @@ fun HomepageScreen(
     val viewModel = hiltViewModel<HomePageViewModel>()
     val articles by viewModel.articles.collectAsState()
     val misions by viewModel.missions.collectAsState()
+    val currentBmi by viewModel.currentBmi.collectAsState()
     val user by viewModel.user.collectAsState()
+
+//    print("NILAI CURRENT BMI SCREEN: $currentBmi")
 
     val firstName = user?.name?.split(" ")?.get(0)
     LazyColumn(
@@ -142,7 +149,8 @@ fun HomepageScreen(
                                     .height(24.dp)
                                     .width(100.dp)
                                     .clip(RoundedCornerShape(24.dp))
-                                    .background(GreenLightHover), contentAlignment = Alignment.Center
+                                    .background(GreenLightHover),
+                                contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     text = "${user?.personalization?.age} Tahun",
@@ -161,10 +169,12 @@ fun HomepageScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        BmiCard{
-                            navController.navigate("bmi")
+                        currentBmi?.let {
+                            BmiCard(bmi = it) {
+                                navController.navigate("bmi")
+                            }
                         }
-                        DailySugarCard{
+                        DailySugarCard {
                             navController.navigate("daily_sugar")
                         }
                     }
@@ -299,7 +309,11 @@ fun HomepageScreen(
                     .fillMaxWidth()
                     .padding(24.dp), horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Artikel", style = CustomTheme.typography.p2, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "Artikel",
+                    style = CustomTheme.typography.p2,
+                    fontWeight = FontWeight.Bold
+                )
                 Box(
                     modifier = Modifier
                         .height(30.dp)

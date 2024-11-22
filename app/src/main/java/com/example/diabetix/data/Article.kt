@@ -13,5 +13,5 @@ data class Article(
     val likes: Int,
     val date: String,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
 ) : Parcelable

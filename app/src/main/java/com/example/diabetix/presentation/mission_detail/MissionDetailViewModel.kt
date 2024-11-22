@@ -1,4 +1,4 @@
-package com.example.diabetix.presentation.analyze_result
+package com.example.diabetix.presentation.mission_detail
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,9 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.diabetix.data.FoodNutrition
 import com.example.diabetix.data.remote.ApiService
 import com.example.diabetix.data.request.AddFoodRequest
-import com.example.diabetix.data.request.AnalyzeRequest
-import com.example.diabetix.data.request.LoginRequest
-import com.example.diabetix.presentation.login.LoginState
+import com.example.diabetix.data.request.UpdateMissionRequest
+import com.example.diabetix.presentation.analyze_result.MyState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -25,16 +24,13 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
-class AnalyzeResultViewModel @Inject constructor(
+class MissionDetailViewModel @Inject constructor(
     private val apiService: ApiService,
     private val dataStore: DataStore<Preferences>
-): ViewModel()  {
-
+): ViewModel(){
 
     private val _state = MutableStateFlow<MyState>(MyState.Idle)
     val state: StateFlow<MyState> = _state
@@ -51,32 +47,19 @@ class AnalyzeResultViewModel @Inject constructor(
         _state.value = MyState.Idle
     }
 
-    fun addFood(nutrition:FoodNutrition,context: Context, imageFile: Bitmap) {
+    fun updateMission(missionId:Int) {
         _state.value = MyState.Loading
         viewModelScope.launch {
             try {
                 val tokenValue = token.first()
-                val imageFile = withContext(Dispatchers.IO) {
-                    bitmapToFile(context, imageFile)
-                }
+                val request = UpdateMissionRequest(
+                    status = "accepted"
+                )
 
-                val requestFile = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                val imagePart = MultipartBody.Part.createFormData("file", imageFile.name, requestFile)
-
-                val response = apiService.uploadFiles("Bearer $tokenValue",imagePart)
+                val response = apiService.updateMissionStatus("Bearer $tokenValue",missionId,request)
                 if (response.isSuccessful) {
                     response.body()?.let {
                         println("CHECK KONDISI LOGIN: 1")
-                        val request = AddFoodRequest(
-                            foodName = nutrition.foodName,
-                            foodImage = response.body()!!.url,
-                            glucose = nutrition.glucose,
-                            calory = nutrition.calories,
-                            fat = nutrition.fat,
-                            protein = nutrition.protein,
-                            carbohydrate = nutrition.carbohydrate
-                        )
-                        val response2 = apiService.addFood("Bearer $tokenValue",request)
                         _state.value = MyState.Success
 
                     } ?: run {
@@ -94,19 +77,4 @@ class AnalyzeResultViewModel @Inject constructor(
         }
     }
 
-    fun bitmapToFile(context: Context, bitmap: Bitmap): File {
-        val file = File(context.cacheDir, "photo.jpg")
-        FileOutputStream(file).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 25, out)
-        }
-        return file
-    }
-
-}
-
-sealed class MyState{
-    object Idle: MyState()
-    object Loading: MyState()
-    object Success: MyState()
-    data class Error(val message:String):MyState()
 }

@@ -15,13 +15,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,8 +53,10 @@ import com.example.diabetix.presentation.login.LoginViewModel
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
+import com.example.diabetix.ui.theme.NetralNormal
 import com.example.diabetix.ui.theme.RedNormal
 import com.example.diabetix.ui.theme.YellowNormal
+import kotlinx.coroutines.delay
 
 @Composable
 fun AnalyzeResultScreen(
@@ -62,6 +72,8 @@ fun AnalyzeResultScreen(
         mutableStateOf(GreenNormal)
     }
 
+    val context = LocalContext.current
+
     levelColor = when (nutrition.levelGlucose) {
         "Gula Tinggi" -> RedNormal
         "Normal" -> YellowNormal
@@ -70,7 +82,7 @@ fun AnalyzeResultScreen(
     }
 
     val viewModel = hiltViewModel<AnalyzeResultViewModel>()
-
+    val state by viewModel.state.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -396,13 +408,7 @@ fun AnalyzeResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MyButton(modifier = Modifier.weight(1f), onClick = {
-                    navController.navigate("homepage") {
-                        popUpTo(
-                            navController.currentBackStackEntry?.destination?.route ?: "homepage"
-                        ) {
-                            inclusive = true
-                        }
-                    }
+                    viewModel.addFood(nutrition, context, image)
                 }, text = "YA")
                 Spacer(modifier = Modifier.width(8.dp))
 
@@ -419,6 +425,61 @@ fun AnalyzeResultScreen(
             }
         }
         Spacer(modifier = Modifier.height(64.dp))
+    }
 
+    //LOADING AND PROSES
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (state) {
+            is MyState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(NetralNormal.copy(0.4f)), contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = GreenNormal, modifier = Modifier.size(64.dp))
+                }
+
+            }
+
+            is MyState.Success -> {
+                LaunchedEffect(Unit) {
+                    delay(200)
+                    navController.navigate("homepage") {
+                        popUpTo(
+                            navController.currentBackStackEntry?.destination?.route ?: "homepage"
+                        ) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+
+            is MyState.Error -> {
+                val errorMessage = (state as MyState.Error).message
+                AlertDialog(
+                    onDismissRequest = { },
+                    confirmButton = {
+                        Button(
+                            onClick = { viewModel.resetState() },
+                            colors = ButtonDefaults.buttonColors(
+                                GreenNormal
+                            )
+                        ) {
+                            Text("OK")
+                        }
+                    },
+                    title = {
+                        Text(text = "Error")
+                    },
+                    text = {
+                        Text(text = errorMessage ?: "Unknown error occurred.")
+                    }
+                )
+            }
+
+            else -> {
+                //
+            }
+        }
     }
 }

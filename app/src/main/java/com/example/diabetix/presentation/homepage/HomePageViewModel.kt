@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.diabetix.data.Article
+import com.example.diabetix.data.Bmi
 import com.example.diabetix.data.Missions
 import com.example.diabetix.data.Profile
 import com.example.diabetix.data.remote.ApiService
@@ -44,6 +45,9 @@ class HomePageViewModel @Inject constructor(
     private val _missions = MutableStateFlow<List<Missions>>(emptyList())
     val missions: StateFlow<List<Missions>> = _missions
 
+    private val _currentBmi = MutableStateFlow<Bmi?>(null)
+    val currentBmi: StateFlow<Bmi?> = _currentBmi
+
     private val _user = MutableStateFlow<Profile?>(null)
     val user: StateFlow<Profile?> = _user
 
@@ -55,6 +59,7 @@ class HomePageViewModel @Inject constructor(
         fetchArticle()
         fetchMission()
         fetchUserData()
+        fetchBmi()
     }
 
     private fun fetchUserData() {
@@ -120,10 +125,37 @@ class HomePageViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     response.body()?.let {
                         _state.value = MyState.Success
-                        _missions.value = response.body()!!.missions
+                        _missions.value = response.body()!!.missions.filter { !it.isDone }
 
                         println("NILAI BODY: " + response.body()!!.missions)
                         println("NILAI MISI: " + _missions.value)
+                    } ?: run {
+                        _state.value = MyState.Error("Empty response body")
+                    }
+                } else {
+
+                    _state.value = MyState.Error("Fetch Data failed")
+                }
+            } catch (e: Exception) {
+                println("CHECK KONDISI LOGIN: 4")
+                _state.value = MyState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    private fun fetchBmi() {
+        _state.value = MyState.Loading // Set loading state
+        viewModelScope.launch {
+            try {
+                val token = token.first()
+                val response = apiService.getAllBmi("Bearer $token")
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _state.value = MyState.Success
+                        _currentBmi.value = response.body()?.data?.currentBMI
+
+                        println("NILAI CURRENT BMI VIEWMODEL: ${_currentBmi.value}" )
+
                     } ?: run {
                         _state.value = MyState.Error("Empty response body")
                     }

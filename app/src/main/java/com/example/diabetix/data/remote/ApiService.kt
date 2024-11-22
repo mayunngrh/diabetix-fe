@@ -1,18 +1,24 @@
 package com.example.diabetix.data.remote
 
+import com.example.diabetix.data.request.AddFoodRequest
 import com.example.diabetix.data.request.AnalyzeRequest
 import com.example.diabetix.data.request.LoginRequest
 import com.example.diabetix.data.request.PersonalizedRequest
 import com.example.diabetix.data.request.RegisterRequest
+import com.example.diabetix.data.request.UpdateMissionRequest
 import com.example.diabetix.data.request.VerifyRequest
+import com.example.diabetix.data.response.AddFoodResponse
 import com.example.diabetix.data.response.AnalyzeResponse
 import com.example.diabetix.data.response.ArticlesResponse
+import com.example.diabetix.data.response.BmiResponse
+import com.example.diabetix.data.response.FileUploadResponse
 import com.example.diabetix.data.response.LoginResponse
 import com.example.diabetix.data.response.MissionResponse
 import com.example.diabetix.data.response.PersonalizedResponse
 import com.example.diabetix.data.response.ProfileResponse
 import com.example.diabetix.data.response.RegisterResponse
 import com.example.diabetix.data.response.ReportResponse
+import com.example.diabetix.data.response.UpdateMissionResponse
 import com.example.diabetix.data.response.VerifyResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -20,8 +26,10 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -73,4 +81,31 @@ interface ApiService {
     suspend fun getReport(
         @Header("Authorization") token: String,
     ): Response<ReportResponse>
+    @Multipart
+    @POST("uploads/files")
+    suspend fun uploadFiles(
+        @Header("Authorization") token: String,
+        @Part file: MultipartBody.Part
+    ): Response<FileUploadResponse>
+
+    @POST("trackers/add")
+    suspend fun addFood(
+        @Header("Authorization") token: String,
+        @Body request : AddFoodRequest
+    ): Response<AddFoodResponse>
+
+    @PATCH("missions/{missionId}")
+    suspend fun updateMissionStatus(
+        @Header("Authorization") token: String,
+        @Path("missionId") missionId: Int,
+        @Body request: UpdateMissionRequest
+    ): Response<UpdateMissionResponse>
+
+
+    @GET("bmis")
+    suspend fun getAllBmi(
+        @Header("Authorization") token: String,
+    ): Response<BmiResponse>
+
+
 }

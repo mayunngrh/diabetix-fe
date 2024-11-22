@@ -1,6 +1,7 @@
 package com.example.diabetix.presentation.mission_detail
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,11 +17,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,14 +40,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.diabetix.R
 import com.example.diabetix.component.MyButton
 import com.example.diabetix.data.Missions
+import com.example.diabetix.presentation.analyze_result.MyState
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenNormal
+import com.example.diabetix.ui.theme.NetralNormal
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -54,6 +65,9 @@ fun MissionDetailScreen(
 
     val context = LocalContext.current
     val markDownText = mission.mission.body.trimIndent()
+
+    val viewModel = hiltViewModel<MissionDetailViewModel>()
+    val state by viewModel.state.collectAsState()
 
     Column(
         modifier = Modifier
@@ -175,7 +189,7 @@ fun MissionDetailScreen(
             Spacer(modifier = Modifier.height(24.dp))
             MyButton(modifier = Modifier, onClick = {
                 if (isDone) {
-                    //DO THE THING
+                    viewModel.updateMission(mission.mission.id)
                 } else {
                     Toast.makeText(
                         context,
@@ -188,6 +202,62 @@ fun MissionDetailScreen(
             Spacer(modifier = Modifier.height(48.dp))
 
 
+        }
+    }
+
+    //LOADING AND PROSES
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (state) {
+            is MyState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(NetralNormal.copy(0.4f)), contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = GreenNormal, modifier = Modifier.size(64.dp))
+                }
+
+            }
+
+            is MyState.Success -> {
+                LaunchedEffect(Unit) {
+                    delay(200)
+                    navController.navigate("homepage") {
+                        popUpTo(
+                            navController.currentBackStackEntry?.destination?.route ?: "homepage"
+                        ) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+
+            is MyState.Error -> {
+                val errorMessage = (state as MyState.Error).message
+                AlertDialog(
+                    onDismissRequest = { },
+                    confirmButton = {
+                        Button(
+                            onClick = { viewModel.resetState() },
+                            colors = ButtonDefaults.buttonColors(
+                                GreenNormal
+                            )
+                        ) {
+                            Text("OK")
+                        }
+                    },
+                    title = {
+                        Text(text = "Error")
+                    },
+                    text = {
+                        Text(text = errorMessage ?: "Unknown error occurred.")
+                    }
+                )
+            }
+
+            else -> {
+                //
+            }
         }
     }
 }
