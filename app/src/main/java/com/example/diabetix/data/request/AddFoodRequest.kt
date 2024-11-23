@@ -3,9 +3,10 @@ package com.example.diabetix.data.request
 data class AddFoodRequest(
     val foodName: String,
     val foodImage: String,
-    val glucose: Float,
-    val calory: Float,
-    val fat: Float,
-    val protein: Float,
-    val carbohydrate:Float
+    val glucose: Int,
+    val calory: Int,
+    val fat: Int,
+    val protein: Int,
+    val carbohydrate:Int,
+    val indexGlycemic:Int
 )

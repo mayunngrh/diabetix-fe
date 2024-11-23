@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,18 +36,28 @@ fun SplashScreen(
 
     val viewModel = hiltViewModel<SplashViewModel>()
     val isLogin = viewModel.isLogin.collectAsState()
+    val user by viewModel.user.collectAsState()
+    println("User SPLASH: $user")
+    println("IsLogin : ${isLogin.value}")
 
     LaunchedEffect(Unit) {
         delay(4000)
-        if (isLogin.value){
-            navController.navigate("homepage"){
-                popUpTo(navController.currentBackStackEntry?.destination?.route ?: "homepage") {
-                    inclusive = true
+        if (isLogin.value) {
+            if (user != null) {
+                println("USER NYA TIDAL NULL: $user")
+                navController.navigate("homepage") {
+                    popUpTo(navController.currentBackStackEntry?.destination?.route ?: "homepage") {
+                        inclusive = true
+                    }
                 }
+            } else {
+                println("USER NYA NULL")
+                navController.navigate("on_boarding")
             }
-        } else{
-            navController.navigate("on_boarding")
 
+
+        } else {
+            navController.navigate("on_boarding")
         }
     }
 
@@ -60,7 +71,11 @@ fun SplashScreen(
             model = R.drawable.logo_only,
             contentDescription = "Splash Logo"
         )
-        Box(modifier = Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.BottomCenter) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp), contentAlignment = Alignment.BottomCenter
+        ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -78,7 +93,7 @@ fun SplashScreen(
                     style = CustomTheme.typography.p4,
                     color = Color.White,
                     textAlign = TextAlign.Center
-                    )
+                )
 
             }
         }

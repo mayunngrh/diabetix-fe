@@ -30,17 +30,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.diabetix.data.Bmi
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightActive
 import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
+import com.example.diabetix.ui.theme.RedDarkActive
+import com.example.diabetix.ui.theme.RedNormal
+import com.example.diabetix.ui.theme.YellowNormal
+import com.example.diabetix.ui.theme.YellowNormalActive
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun RiwayatBmiItem() {
+fun RiwayatBmiItem(
+    bmi: Bmi
+) {
+    val date = formatDateRiwayat(bmi.createdAt)
+    val date2 = formatDate(bmi.createdAt)
     Text(
         modifier = Modifier.fillMaxWidth(),
         textAlign = TextAlign.Left,
-        text = "20 September",
+        text = date,
         style = CustomTheme.typography.p4,
     )
 
@@ -84,7 +95,7 @@ fun RiwayatBmiItem() {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        text = "24.4",
+                        text = bmi.bmi.toString(),
                         style = CustomTheme.typography.h1,
                         fontWeight = FontWeight.Bold,
                         color = GreenNormal
@@ -104,15 +115,26 @@ fun RiwayatBmiItem() {
                             .width(85.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .background(
-                                GreenNormal
+                                when (bmi.status) {
+                                    "Underweight" -> GreenLightActive
+                                    "Overweight" -> YellowNormal
+                                    "Normal" -> GreenNormal
+                                    "Obesity I" -> YellowNormalActive
+                                    "Obesity I" -> RedNormal
+                                    "Obesity III" -> RedDarkActive
+                                    else -> GreenNormal
+                                }
                             ), contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Normal",
+                            text = bmi.status,
                             style = CustomTheme.typography.p4,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 11.sp,
-                            color = Color.White
+                            fontSize = 8.sp,
+                            color = when(bmi.status){
+                                "Underweight" -> GreenNormal
+                                else -> Color.White
+                            }
                         )
                     }
 
@@ -120,7 +142,7 @@ fun RiwayatBmiItem() {
 
                     //TANGGAL
                     Text(
-                        text = "14/09/2024",
+                        text = date2,
                         style = CustomTheme.typography.p4,
                         fontSize = 12.sp,
                         color = GreenNormal
@@ -137,8 +159,8 @@ fun RiwayatBmiItem() {
                         modifier = Modifier
                             .height(30.dp)
                             .width(85.dp)
-                            .border(1.dp, GreenNormal, RoundedCornerShape(16.dp))
-                        , contentAlignment = Alignment.Center
+                            .border(1.dp, GreenNormal, RoundedCornerShape(16.dp)),
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "Tinggi",
@@ -152,7 +174,7 @@ fun RiwayatBmiItem() {
 
                     //TINGGI
                     Text(
-                        text = "181 cm",
+                        text = bmi.height.toString()+" cm" ,
                         style = CustomTheme.typography.p4,
                         fontSize = 12.sp,
                         color = GreenNormal
@@ -169,8 +191,8 @@ fun RiwayatBmiItem() {
                         modifier = Modifier
                             .height(30.dp)
                             .width(85.dp)
-                            .border(1.dp, GreenNormal, RoundedCornerShape(16.dp))
-                        , contentAlignment = Alignment.Center
+                            .border(1.dp, GreenNormal, RoundedCornerShape(16.dp)),
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "Massa",
@@ -184,7 +206,7 @@ fun RiwayatBmiItem() {
 
                     //TINGGI
                     Text(
-                        text = "80 kg",
+                        text = bmi.weight.toString()+" kg",
                         style = CustomTheme.typography.p4,
                         fontSize = 12.sp,
                         color = GreenNormal
@@ -217,4 +239,11 @@ fun RiwayatBmiItem() {
 
     Spacer(modifier = Modifier.height(24.dp))
 
+}
+
+fun formatDateRiwayat(input: String): String {
+    val inputFormatter = DateTimeFormatter.ISO_DATE_TIME
+    val outputFormatter = DateTimeFormatter.ofPattern("dd MMMM")
+    val dateTime = LocalDateTime.parse(input, inputFormatter)
+    return dateTime.format(outputFormatter)
 }

@@ -58,7 +58,7 @@ fun OnGoingMissionScreen(
     targetSize:Int
 ) {
 
-    val currentMission = missions.size
+    val currentFinished = targetSize - missions.size
 
     LazyColumn(
         modifier = Modifier
@@ -72,7 +72,7 @@ fun OnGoingMissionScreen(
 
         // CHART TARGET HARIAN
         item {
-            MissionSemiCircularChart(currentValue = currentMission, targetValue = targetSize)
+            MissionSemiCircularChart(currentValue = currentFinished, targetValue = targetSize)
         }
 
         // TEXT DIBAWAH CHART

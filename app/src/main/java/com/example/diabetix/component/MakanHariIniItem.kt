@@ -30,12 +30,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.diabetix.R
+import com.example.diabetix.data.GlucoseTrackerDetail
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
+import com.example.diabetix.ui.theme.RedNormal
+import com.example.diabetix.ui.theme.YellowNormal
 
 @Composable
-fun MakanHariIniItem(){
+fun MakanHariIniItem(
+    glucoseTrackerDetail: GlucoseTrackerDetail
+){
     ElevatedCard(
         modifier = Modifier
             .height(90.dp)
@@ -49,7 +54,7 @@ fun MakanHariIniItem(){
             //Foto Makanan
             AsyncImage(
                 modifier = Modifier.width(120.dp),
-                model = R.drawable.dummy_photo_analyze,
+                model = glucoseTrackerDetail.foodImage,
                 contentDescription = "",
                 contentScale = ContentScale.Crop
             )
@@ -65,7 +70,7 @@ fun MakanHariIniItem(){
                 Text(
                     modifier = Modifier.padding(vertical = 8.dp),
                     textAlign = TextAlign.Left,
-                    text = "Donat Coklat",
+                    text = glucoseTrackerDetail.foodName,
                     style = CustomTheme.typography.p2,
                     fontWeight = FontWeight.Bold
                 )
@@ -80,11 +85,16 @@ fun MakanHariIniItem(){
                             .width(100.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .background(
-                                GreenNormal
+                                when(glucoseTrackerDetail.levelGlycemic){
+                                    "Tinggi" -> RedNormal
+                                    "Normal" -> YellowNormal
+                                    "Rendah" -> GreenNormal
+                                    else -> GreenNormal
+                                }
                             ), contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Normal",
+                            text = glucoseTrackerDetail.levelGlycemic,
                             style = CustomTheme.typography.p4,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -95,7 +105,7 @@ fun MakanHariIniItem(){
 
                     // jumlah gula
                     Text(
-                        text = "36gr",
+                        text = glucoseTrackerDetail.glucose.toString()+"gr",
                         style = CustomTheme.typography.p3,
                     )
                 }

@@ -9,6 +9,7 @@ import com.example.diabetix.data.Article
 import com.example.diabetix.data.Bmi
 import com.example.diabetix.data.Missions
 import com.example.diabetix.data.Profile
+import com.example.diabetix.data.Tracker
 import com.example.diabetix.data.remote.ApiService
 import com.example.diabetix.data.request.LoginRequest
 import com.example.diabetix.presentation.analyze_result.MyState
@@ -48,6 +49,9 @@ class HomePageViewModel @Inject constructor(
     private val _currentBmi = MutableStateFlow<Bmi?>(null)
     val currentBmi: StateFlow<Bmi?> = _currentBmi
 
+    private val _currentTracker = MutableStateFlow<Tracker?>(null)
+    val currentTracker: StateFlow<Tracker?> = _currentTracker
+
     private val _user = MutableStateFlow<Profile?>(null)
     val user: StateFlow<Profile?> = _user
 
@@ -60,6 +64,7 @@ class HomePageViewModel @Inject constructor(
         fetchMission()
         fetchUserData()
         fetchBmi()
+        fetchTracker()
     }
 
     private fun fetchUserData() {
@@ -74,15 +79,21 @@ class HomePageViewModel @Inject constructor(
                     response.body()?.let {
                         _state.value = MyState.Success
                         _user.value = response.body()!!.profiles
+                        println("BERHASIL FETCH DATA")
                     } ?: run {
                         _state.value = MyState.Error("Empty response body")
+                        println("FETCH DATA GAGAL 1")
                     }
                 } else {
-
                     _state.value = MyState.Error("Fetch USER Data failed")
+                    println("FETCH DATA GAGAL 2")
+
                 }
             } catch (e: Exception) {
                 _state.value = MyState.Error(e.message ?: "Unknown error")
+                println("FETCH DATA GAGAL 3")
+                println("error: ${e.message}")
+
             }
         }
     }
@@ -94,7 +105,6 @@ class HomePageViewModel @Inject constructor(
             try {
 
                 val token = token.first()
-                println("TOKEN ADALAH " + token)
 
                 val response = apiService.getAllArticles("Bearer $token")
                 if (response.isSuccessful) {
@@ -127,8 +137,6 @@ class HomePageViewModel @Inject constructor(
                         _state.value = MyState.Success
                         _missions.value = response.body()!!.missions.filter { !it.isDone }
 
-                        println("NILAI BODY: " + response.body()!!.missions)
-                        println("NILAI MISI: " + _missions.value)
                     } ?: run {
                         _state.value = MyState.Error("Empty response body")
                     }
@@ -144,7 +152,7 @@ class HomePageViewModel @Inject constructor(
     }
 
     private fun fetchBmi() {
-        _state.value = MyState.Loading // Set loading state
+        _state.value = MyState.Loading
         viewModelScope.launch {
             try {
                 val token = token.first()
@@ -153,8 +161,6 @@ class HomePageViewModel @Inject constructor(
                     response.body()?.let {
                         _state.value = MyState.Success
                         _currentBmi.value = response.body()?.data?.currentBMI
-
-                        println("NILAI CURRENT BMI VIEWMODEL: ${_currentBmi.value}" )
 
                     } ?: run {
                         _state.value = MyState.Error("Empty response body")
@@ -165,6 +171,32 @@ class HomePageViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 println("CHECK KONDISI LOGIN: 4")
+                _state.value = MyState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    private fun fetchTracker() {
+        _state.value = MyState.Loading
+        viewModelScope.launch {
+            try {
+                val token = token.first()
+                val response = apiService.getAllTrackers("Bearer $token")
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _state.value = MyState.Success
+                        _currentTracker.value = response.body()?.result?.currentTracker
+                        print("KONDISI TRACKER BERHASIL")
+                    } ?: run {
+                        _state.value = MyState.Error("Empty response body")
+                        print("KONDISI TRACKER GAGAL1")
+                    }
+                } else {
+                    print("KONDISI TRACKER GAGAL2")
+                    _state.value = MyState.Error("Fetch Data failed")
+                }
+            } catch (e: Exception) {
+                print("KONDISI TRACKER GAGAL3: ${e.message}")
                 _state.value = MyState.Error(e.message ?: "Unknown error")
             }
         }

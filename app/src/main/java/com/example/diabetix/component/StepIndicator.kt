@@ -29,6 +29,7 @@ fun StepIndicator(currentStep: Int) {
             if (currentStep >= 2) GreenNormal else NetralLightActive,
             if (currentStep >= 3) GreenNormal else NetralLightActive,
             if (currentStep >= 4) GreenNormal else NetralLightActive,
+            if (currentStep >= 5) GreenNormal else NetralLightActive,
         )
 
         stepColors.forEachIndexed { index, color ->

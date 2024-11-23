@@ -14,4 +14,5 @@ data class Article(
     val date: String,
     val createdAt: String,
     val updatedAt: String,
+    val isLikedByCurrentUser: Boolean
 ) : Parcelable

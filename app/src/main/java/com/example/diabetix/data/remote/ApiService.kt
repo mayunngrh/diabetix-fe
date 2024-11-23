@@ -18,11 +18,13 @@ import com.example.diabetix.data.response.PersonalizedResponse
 import com.example.diabetix.data.response.ProfileResponse
 import com.example.diabetix.data.response.RegisterResponse
 import com.example.diabetix.data.response.ReportResponse
+import com.example.diabetix.data.response.TrackerResponse
 import com.example.diabetix.data.response.UpdateMissionResponse
 import com.example.diabetix.data.response.VerifyResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -72,6 +74,11 @@ interface ApiService {
         @Header("Authorization") token: String,
     ): Response<MissionResponse>
 
+    @GET("trackers")
+    suspend fun getAllTrackers(
+        @Header("Authorization") token: String,
+    ): Response<TrackerResponse>
+
     @GET("users/profile")
     suspend fun getUserData(
         @Header("Authorization") token: String,
@@ -81,6 +88,7 @@ interface ApiService {
     suspend fun getReport(
         @Header("Authorization") token: String,
     ): Response<ReportResponse>
+
     @Multipart
     @POST("uploads/files")
     suspend fun uploadFiles(
@@ -91,14 +99,13 @@ interface ApiService {
     @POST("trackers/add")
     suspend fun addFood(
         @Header("Authorization") token: String,
-        @Body request : AddFoodRequest
+        @Body request: AddFoodRequest
     ): Response<AddFoodResponse>
 
-    @PATCH("missions/{missionId}")
+    @PATCH("missions/{missionId}/accepted")
     suspend fun updateMissionStatus(
         @Header("Authorization") token: String,
         @Path("missionId") missionId: Int,
-        @Body request: UpdateMissionRequest
     ): Response<UpdateMissionResponse>
 
 
@@ -106,6 +113,19 @@ interface ApiService {
     suspend fun getAllBmi(
         @Header("Authorization") token: String,
     ): Response<BmiResponse>
+
+
+    @POST("articles/{ArticleId}/likes")
+    suspend fun createLikes(
+        @Header("Authorization") token: String,
+        @Path("ArticleId") articleId: Int
+    ): Response<Unit>
+
+    @DELETE("articles/{ArticleId}/likes")
+    suspend fun deleteLikes(
+        @Header("Authorization") token: String,
+        @Path("ArticleId") articleId: Int
+    ): Response<Unit>
 
 
 }

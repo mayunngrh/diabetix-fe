@@ -5,6 +5,7 @@ data class PersonalizedRequest(
     val gender:String,
     val age:Int,
     val frequenceSport:String,
+    val diabetesInheritance: Boolean,
     val height : Int,
     val weight : Int
 )

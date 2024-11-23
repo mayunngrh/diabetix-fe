@@ -1,71 +1,67 @@
-package com.example.diabetix.presentation.mission_detail
+package com.example.diabetix.presentation.bmi
 
-import android.content.Context
-import android.graphics.Bitmap
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.diabetix.data.FoodNutrition
+import com.example.diabetix.data.Bmi
 import com.example.diabetix.data.remote.ApiService
-import com.example.diabetix.data.request.AddFoodRequest
-import com.example.diabetix.data.request.UpdateMissionRequest
 import com.example.diabetix.presentation.analyze_result.MyState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
 
 @HiltViewModel
-class MissionDetailViewModel @Inject constructor(
+class BmiViewModel @Inject constructor(
     private val apiService: ApiService,
     private val dataStore: DataStore<Preferences>
-): ViewModel(){
+) : ViewModel() {
+
+    private val TOKEN = stringPreferencesKey("token")
 
     private val _state = MutableStateFlow<MyState>(MyState.Idle)
     val state: StateFlow<MyState> = _state
+
+    private val _currentBmi = MutableStateFlow<Bmi?>(null)
+    val currentBmi: StateFlow<Bmi?> = _currentBmi
+
+    private val _historyBmi = MutableStateFlow<List<Bmi>?>(emptyList())
+    val historyBmi : StateFlow<List<Bmi>?> = _historyBmi
 
     val token: Flow<String> = dataStore.data
         .map { preferences -> preferences[TOKEN] ?: "" }
 
 
-    private val TOKEN = stringPreferencesKey("token")
-    private val ID = stringPreferencesKey("id")
-
-
-    fun resetState(){
-        _state.value = MyState.Idle
+    init{
+        fetchBmi()
     }
 
-    fun updateMission(missionId:Int) {
-        _state.value = MyState.Loading
+    private fun fetchBmi() {
+        _state.value = MyState.Loading // Set loading state
         viewModelScope.launch {
             try {
-                val tokenValue = token.first()
-
-                val response = apiService.updateMissionStatus("Bearer $tokenValue",missionId)
+                val token = token.first()
+                val response = apiService.getAllBmi("Bearer $token")
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        println("CHECK KONDISI LOGIN: 1")
                         _state.value = MyState.Success
+                        _currentBmi.value = response.body()?.data?.currentBMI
+                        _historyBmi.value = response.body()?.data?.weekPreviousBMI
+
+                        println("NILAI CURRENT BMI VIEWMODEL: ${_currentBmi.value}" )
 
                     } ?: run {
-                        println("CHECK KONDISI LOGIN: 2")
                         _state.value = MyState.Error("Empty response body")
                     }
                 } else {
-                    println("CHECK KONDISI LOGIN: 3")
-                    _state.value = MyState.Error("Periksa Kembali Jaringan Anda")
+
+                    _state.value = MyState.Error("Fetch Data failed")
                 }
             } catch (e: Exception) {
                 println("CHECK KONDISI LOGIN: 4")
@@ -73,5 +69,4 @@ class MissionDetailViewModel @Inject constructor(
             }
         }
     }
-
 }

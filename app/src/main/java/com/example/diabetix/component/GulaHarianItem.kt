@@ -28,17 +28,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.diabetix.data.Tracker
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightActive
 import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
+import com.example.diabetix.ui.theme.RedNormal
+import com.example.diabetix.ui.theme.YellowNormal
 
 @Composable
-fun GulaHarianItem() {
+fun GulaHarianItem(
+    tracker :Tracker
+) {
+    val date = formatDateRiwayat(tracker.createdAt)
     Text(
         modifier = Modifier.fillMaxWidth(),
         textAlign = TextAlign.Left,
-        text = "20 September",
+        text = date,
         style = CustomTheme.typography.p4,
     )
     Spacer(modifier = Modifier.height(12.dp))
@@ -81,7 +87,7 @@ fun GulaHarianItem() {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        text = "43gr",
+                        text = tracker.totalGlucose.toString()+"gr",
                         style = CustomTheme.typography.h1,
                         fontWeight = FontWeight.Bold,
                         color = GreenNormal
@@ -91,7 +97,7 @@ fun GulaHarianItem() {
                     Text(
                         modifier = Modifier.align(Alignment.End),
                         textAlign = TextAlign.Right,
-                        text = "/75gr",
+                        text = "/"+tracker.maxGlucose.toString()+"gr",
                         style = CustomTheme.typography.p4,
                         fontSize = 10.sp,
                         color = GreenNormal
@@ -109,11 +115,16 @@ fun GulaHarianItem() {
                     .width(100.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(
-                        GreenNormal
+                        when(tracker.status){
+                            "Tinggi" -> RedNormal
+                            "Normal" -> YellowNormal
+                            "Rendah" -> GreenNormal
+                            else-> GreenNormal
+                        }
                     ), contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Normal",
+                    text = tracker.status,
                     style = CustomTheme.typography.p4,
                     fontWeight = FontWeight.Bold,
                     color = Color.White

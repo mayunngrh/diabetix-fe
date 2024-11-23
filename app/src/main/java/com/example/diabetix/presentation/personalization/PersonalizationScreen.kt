@@ -43,6 +43,7 @@ import androidx.navigation.NavController
 import com.example.diabetix.component.FrequencySelection
 import com.example.diabetix.component.GenderSelection
 import com.example.diabetix.component.HintNumberField
+import com.example.diabetix.component.InheritanceDiabet
 import com.example.diabetix.component.StepIndicator
 import com.example.diabetix.data.request.PersonalizedRequest
 import com.example.diabetix.ui.theme.CustomTheme
@@ -59,19 +60,23 @@ fun PersonalizationScreen(
         mutableStateOf(1)
     }
 
-    var gender by remember{
+    var gender by remember {
         mutableStateOf("")
     }
 
-    var age by remember{
+    var diabetInheritance by remember {
         mutableStateOf("")
     }
 
-    var height by remember{
+    var age by remember {
         mutableStateOf("")
     }
 
-    var weight by remember{
+    var height by remember {
+        mutableStateOf("")
+    }
+
+    var weight by remember {
         mutableStateOf("")
     }
 
@@ -80,9 +85,9 @@ fun PersonalizationScreen(
     val id by viewModel.idFlow.collectAsState(initial = "")
 
 
-    println("Nilai age: " +age)
-    println("Nilai height: " +height)
-    println("Nilai weight: " +weight)
+    println("Nilai age: " + age)
+    println("Nilai height: " + height)
+    println("Nilai weight: " + weight)
 
 
     println("Nilai gender: " + gender)
@@ -148,9 +153,9 @@ fun PersonalizationScreen(
                         modifier = Modifier
                             .width(130.dp)
                             .height(50.dp), onClick = {
-                            if (currentStep < 4) {
+                            if (currentStep < 5) {
                                 currentStep++
-                            } else{
+                            } else {
                                 val ageString = age.replace(" ", "")
                                 val ageInt = ageString.toInt()
 
@@ -161,7 +166,29 @@ fun PersonalizationScreen(
                                 val weightString = weight.replace(" ", "")
                                 val weightInt = weightString.toInt()
 
-                                val request = PersonalizedRequest(id,gender,ageInt,selectedFrequency.toString(),heightInt, weightInt)
+                                val diabetInharitanceBoolean = when (diabetInheritance){
+                                    "Ya" -> true
+                                    "Tidak" -> false
+                                    else -> false
+                                }
+
+                                val frequenceSport = when(selectedFrequency){
+                                    1-> "OncePerWeek"
+                                    2-> "OnceToThreePerWeek"
+                                    3-> "FourToFiveTimesPerWeek"
+                                    4-> "FiveToSevenTimesPerWeek"
+                                    else -> "OncePerWeek"
+                                }
+
+                                val request = PersonalizedRequest(
+                                    id,
+                                    gender,
+                                    ageInt,
+                                    frequenceSport,
+                                    diabetInharitanceBoolean,
+                                    heightInt,
+                                    weightInt
+                                )
                                 viewModel.personalized(request)
                             }
                         },
@@ -209,7 +236,7 @@ fun PersonalizationScreen(
                             )
                         }
 
-                        2->{
+                        2 -> {
                             Text(
                                 text = "Apa jenis kelamin kamu?",
                                 style = CustomTheme.typography.p1,
@@ -218,10 +245,12 @@ fun PersonalizationScreen(
 
                             Spacer(modifier = Modifier.height(64.dp))
 
-                            GenderSelection(selectedGender = gender, onGenderSelected = {gender = it})
+                            GenderSelection(
+                                selectedGender = gender,
+                                onGenderSelected = { gender = it })
                         }
 
-                        3->{
+                        3 -> {
                             Text(
                                 text = "Berapa umur kamu?",
                                 style = CustomTheme.typography.p1,
@@ -230,10 +259,14 @@ fun PersonalizationScreen(
 
                             Spacer(modifier = Modifier.height(64.dp))
 
-                            HintNumberField(hint = "Masukkan umur anda", onValueChange = {age = it}, value = age)
+                            HintNumberField(
+                                hint = "Masukkan umur anda",
+                                onValueChange = { age = it },
+                                value = age
+                            )
                         }
 
-                        4->{
+                        4 -> {
                             Text(
                                 text = "Masukkan berat dan tinggi badan kamu",
                                 style = CustomTheme.typography.p1,
@@ -242,11 +275,32 @@ fun PersonalizationScreen(
 
                             Spacer(modifier = Modifier.height(64.dp))
 
-                            HintNumberField(hint = "Masukkan tinggi badan anda", onValueChange = {height = it}, value = height)
+                            HintNumberField(
+                                hint = "Masukkan tinggi badan anda",
+                                onValueChange = { height = it },
+                                value = height
+                            )
                             Spacer(modifier = Modifier.height(24.dp))
 
-                            HintNumberField(hint = "Masukkan berat badan anda", onValueChange = {weight = it}, value = weight)
+                            HintNumberField(
+                                hint = "Masukkan berat badan anda",
+                                onValueChange = { weight = it },
+                                value = weight
+                            )
 
+                        }
+
+                        5 -> {
+                            Text(
+                                text = "Berapa umur kamu?",
+                                style = CustomTheme.typography.p1,
+                                fontWeight = FontWeight.Bold,
+                            )
+
+                            Spacer(modifier = Modifier.height(64.dp))
+                            InheritanceDiabet(selectedOption = diabetInheritance) {
+                                diabetInheritance = it
+                            }
                         }
                     }
                 }

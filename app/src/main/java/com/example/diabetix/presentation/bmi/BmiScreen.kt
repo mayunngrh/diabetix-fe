@@ -1,6 +1,7 @@
 package com.example.diabetix.presentation.bmi
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.diabetix.R
@@ -39,11 +42,17 @@ import com.example.diabetix.ui.theme.GreenNormal
 @Composable
 fun BmiScreen(navController: NavController){
     var selectedTab by remember { mutableStateOf(0) }
+    val viewModel = hiltViewModel<BmiViewModel>()
+    val currentBmi by viewModel.currentBmi.collectAsState()
+    val historyBmi by viewModel.historyBmi.collectAsState()
+
+    println("Nilai Current BMI di BMI Screen: $currentBmi")
+    println("Nilai historyBmi di BMI Screen: $historyBmi")
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         Box(
             modifier = Modifier
@@ -56,7 +65,14 @@ fun BmiScreen(navController: NavController){
             Icon(
                 modifier = Modifier
                     .size(32.dp)
-                    .align(Alignment.BottomStart),
+                    .align(Alignment.BottomStart)
+                    .clickable {
+                        navController.navigate("homepage") {
+                            popUpTo(navController.currentBackStackEntry?.destination?.route ?: "homepage") {
+                                inclusive = true
+                            }
+                        }
+                    },
                 imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = "",
                 tint = Color.White
@@ -113,8 +129,10 @@ fun BmiScreen(navController: NavController){
 
 
         when (selectedTab) {
-            0 -> DetailBmiScreen()
-            1 -> RiwayatBmiScreen()
+            0 -> if(currentBmi != null){
+                DetailBmiScreen(bmi = currentBmi!!)
+            }
+            1 -> historyBmi?.let { RiwayatBmiScreen(history = it) }
         }
     }
 }

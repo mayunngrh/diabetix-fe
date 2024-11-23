@@ -64,421 +64,458 @@ fun AnalyzeResultScreen(
     imagePath: String,
     nutrition: FoodNutrition
 ) {
-    val image = remember {
-        BitmapFactory.decodeFile(imagePath)
-    }
+    if(imagePath != null && nutrition != null){
+        val image = remember {
+            BitmapFactory.decodeFile(imagePath)
+        }
+        println("image path: $imagePath")
+        println("nutrition: $nutrition")
 
-    var levelColor by remember {
-        mutableStateOf(GreenNormal)
-    }
-
-    val context = LocalContext.current
-
-    levelColor = when (nutrition.levelGlucose) {
-        "Gula Tinggi" -> RedNormal
-        "Normal" -> YellowNormal
-        "Gula Rendah" -> GreenNormal
-        else -> GreenNormal
-    }
-
-    val viewModel = hiltViewModel<AnalyzeResultViewModel>()
-    val state by viewModel.state.collectAsState()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(130.dp)
-                .background(GreenNormal),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Text(
-                modifier = Modifier.padding(24.dp),
-                text = "Detail Makanan",
-                style = CustomTheme.typography.h2,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+        var levelColor by remember {
+            mutableStateOf(GreenNormal)
         }
 
-        // BOX image
-        Box(
+        val context = LocalContext.current
+
+        levelColor = when (nutrition.levelGlycemic) {
+            "Tinggi" -> RedNormal
+            "Normal" -> YellowNormal
+            "Rendah" -> GreenNormal
+            else -> GreenNormal
+        }
+
+        val viewModel = hiltViewModel<AnalyzeResultViewModel>()
+        val state by viewModel.state.collectAsState()
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(450.dp)
-                .padding(24.dp)
-                .clip(RoundedCornerShape(24.dp))
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            image?.let {
-                Image(
-                    bitmap = it.asImageBitmap(),
-                    contentDescription = "Analyzed Image",
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(130.dp)
+                    .background(GreenNormal),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Text(
+                    modifier = Modifier.padding(24.dp),
+                    text = "Detail Makanan",
+                    style = CustomTheme.typography.h2,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+
+            // BOX image
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(450.dp)
+                    .padding(24.dp)
+                    .clip(RoundedCornerShape(24.dp))
+            ) {
+                image?.let {
+                    Image(
+                        bitmap = it.asImageBitmap(),
+                        contentDescription = "Analyzed Image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(450.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                } ?: Text("Image not available")
+            }
+
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+            ) {
+                //BOX NAMA MAKANAN
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(450.dp),
-                    contentScale = ContentScale.Crop
-                )
-            } ?: Text("Image not available")
-        }
-
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-        ) {
-            //BOX NAMA MAKANAN
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(GreenLightHover)
-            ) {
-                Box(
-                    modifier = Modifier
                         .height(50.dp)
-                        .width(200.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFFB0E4D3))
-                        .align(Alignment.CenterEnd),
-                    contentAlignment = Alignment.Center
+                        .background(GreenLightHover)
                 ) {
-                    //NAMA MAKANAN
-                    Text(
-                        text = nutrition.foodName,
-                        style = CustomTheme.typography.p3,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Row(Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 24.dp),
-                        text = "Nama makanan",
-                        style = CustomTheme.typography.p4
-                    )
-                }
-            }
-
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            //BOX JUMLAH GULA
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(GreenLightHover)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(200.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFFB0E4D3))
-                        .align(Alignment.CenterEnd),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
-                        modifier = Modifier.matchParentSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
+                    Box(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color(0xFFB0E4D3))
+                            .align(Alignment.CenterEnd),
+                        contentAlignment = Alignment.Center
                     ) {
-
-                        //JUMLAH GULA
+                        //NAMA MAKANAN
                         Text(
-                            text = "${nutrition.glucose.toInt()} gr",
+                            text = nutrition.foodName,
                             style = CustomTheme.typography.p3,
                             fontWeight = FontWeight.Bold
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                    Row(Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            text = "Nama makanan",
+                            style = CustomTheme.typography.p4
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                //BOX JUMLAH GULA
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(GreenLightHover)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color(0xFFB0E4D3))
+                            .align(Alignment.CenterEnd),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        //Jumlah Gula
+                        Text(
+                            text = nutrition.glucose.toString() +"gr",
+                            style = CustomTheme.typography.p3,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Row(Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            text = "Jumlah Gula",
+                            style = CustomTheme.typography.p4
+                        )
+                    }
+                }
+
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                //BOX INDEX Glycemic
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(GreenLightHover)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color(0xFFB0E4D3))
+                            .align(Alignment.CenterEnd),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            modifier = Modifier.matchParentSize(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+
+                            //JUMLAH GULA
+                            Text(
+                                text = nutrition.indexGlycemic.toString(),
+                                style = CustomTheme.typography.p3,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .height(50.dp)
+                                    .width(140.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(levelColor),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                //JUMLAH DALAM GR
+                                Text(
+                                    text = nutrition.levelGlycemic,
+                                    style = CustomTheme.typography.p3,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+
+                        }
+
+                    }
+                    Row(Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            text = "Indeks Glikemik",
+                            style = CustomTheme.typography.p4
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                //BOX NUTRISI LAINNYA
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .clip(
+                            RoundedCornerShape(16.dp)
+                        )
+                        .background(GreenLightHover),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column {
                         Box(
                             modifier = Modifier
+                                .fillMaxWidth()
                                 .height(50.dp)
-                                .width(140.dp)
                                 .clip(RoundedCornerShape(16.dp))
-                                .background(levelColor),
+                                .background(Color(0xFFB0E4D3)),
                             contentAlignment = Alignment.Center
                         ) {
-                            //JUMLAH DALAM GR
                             Text(
-                                text = nutrition.levelGlucose,
+                                text = "Nutrisi Lainnya",
                                 style = CustomTheme.typography.p3,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                fontWeight = FontWeight.Bold
                             )
                         }
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                    }
+                        Column(modifier = Modifier.padding(16.dp)) {
 
-                }
-                Row(Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 24.dp),
-                        text = "Jumlah Gula",
-                        style = CustomTheme.typography.p4
-                    )
-                }
-            }
+                            //KALORIIII
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(0xFFB0E4D3)),
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(12.dp),
+                                    text = "Kalori : ${nutrition.calories} kkal",
+                                    style = CustomTheme.typography.p4
+                                )
+                            }
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            //BOX NUTRISI LAINNYA
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .clip(
-                        RoundedCornerShape(16.dp)
-                    )
-                    .background(GreenLightHover),
-                contentAlignment = Alignment.Center
-            ) {
-                Column {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color(0xFFB0E4D3)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Nutrisi Lainnya",
-                            style = CustomTheme.typography.p3,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
+                            //Lemak Total
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(0xFFB0E4D3)),
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(12.dp),
+                                    text = "Lemak total : ${nutrition.fat} kkal",
+                                    style = CustomTheme.typography.p4
+                                )
+                            }
 
-                    Column(modifier = Modifier.padding(16.dp)) {
+                            //Karbohidrat Total
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(0xFFB0E4D3)),
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(12.dp),
+                                    text = "Karbohidrat total : ${nutrition.carbohydrate} kkal",
+                                    style = CustomTheme.typography.p4
+                                )
+                            }
 
-                        //KALORIIII
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color(0xFFB0E4D3)),
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(12.dp),
-                                text = "Kalori : ${nutrition.calories} kkal",
-                                style = CustomTheme.typography.p4
-                            )
+                            //Protein Total
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(0xFFB0E4D3)),
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(12.dp),
+                                    text = "Protein : ${nutrition.protein} kkal",
+                                    style = CustomTheme.typography.p4
+                                )
+                            }
+
                         }
+                        Spacer(modifier = Modifier.height(12.dp))
 
-
-                        //Lemak Total
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color(0xFFB0E4D3)),
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(12.dp),
-                                text = "Lemak total : ${nutrition.fat} kkal",
-                                style = CustomTheme.typography.p4
-                            )
-                        }
-
-                        //Karbohidrat Total
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color(0xFFB0E4D3)),
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(12.dp),
-                                text = "Karbohidrat total : ${nutrition.carbohydrate} kkal",
-                                style = CustomTheme.typography.p4
-                            )
-                        }
-
-                        //Protein Total
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color(0xFFB0E4D3)),
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(12.dp),
-                                text = "Protein : ${nutrition.protein} kkal",
-                                style = CustomTheme.typography.p4
-                            )
-                        }
-
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            //GRAFIK CIRCULAR
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                SemiCircularChart(
-                    currentValue = nutrition.currentGlucose.toInt(),
-                    maxValue = nutrition.maxGlucose.toInt()
-                )
-            }
-
-            //TEXT DIBAWAH GRAFIK
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                text = "Grafik di atas adalah jumlah gula yang Anda konsumsi apabila Anda mengonsumsi makanan ini",
-                style = CustomTheme.typography.p4,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-
-            //BOX SARAN
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .clip(
-                        RoundedCornerShape(16.dp)
-                    )
-                    .background(GreenLightHover),
-                contentAlignment = Alignment.Center
-            ) {
-                Column {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color(0xFFB0E4D3)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Saran",
-                            style = CustomTheme.typography.p3,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            text = nutrition.advice,
-                            style = CustomTheme.typography.p4,
-                            textAlign = TextAlign.Justify
-                        )
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            //TEXT DIBAWAH GRAFIK
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                text = "Apakah kamu ingin menambahkan Donat Cokelat ke dalam riwayat gula harianmu?",
-                style = CustomTheme.typography.p4,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MyButton(modifier = Modifier.weight(1f), onClick = {
-                    viewModel.addFood(nutrition, context, image)
-                }, text = "YA")
-                Spacer(modifier = Modifier.width(8.dp))
-
-
-                MyButton(modifier = Modifier.weight(1f), onClick = {
-                    navController.navigate("homepage") {
-                        popUpTo(
-                            navController.currentBackStackEntry?.destination?.route ?: "homepage"
-                        ) {
-                            inclusive = true
-                        }
-                    }
-                }, text = "TIDAK")
-            }
-        }
-        Spacer(modifier = Modifier.height(64.dp))
-    }
-
-    //LOADING AND PROSES
-    Box(modifier = Modifier.fillMaxSize()) {
-        when (state) {
-            is MyState.Loading -> {
+                //GRAFIK CIRCULAR
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(NetralNormal.copy(0.4f)), contentAlignment = Alignment.Center
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = GreenNormal, modifier = Modifier.size(64.dp))
+                    SemiCircularChart(
+                        currentValue = nutrition.currentGlucose.toInt(),
+                        maxValue = nutrition.maxGlucose.toInt()
+                    )
                 }
 
-            }
-
-            is MyState.Success -> {
-                LaunchedEffect(Unit) {
-                    delay(200)
-                    navController.navigate("homepage") {
-                        popUpTo(
-                            navController.currentBackStackEntry?.destination?.route ?: "homepage"
-                        ) {
-                            inclusive = true
-                        }
-                    }
-                }
-            }
-
-            is MyState.Error -> {
-                val errorMessage = (state as MyState.Error).message
-                AlertDialog(
-                    onDismissRequest = { },
-                    confirmButton = {
-                        Button(
-                            onClick = { viewModel.resetState() },
-                            colors = ButtonDefaults.buttonColors(
-                                GreenNormal
-                            )
-                        ) {
-                            Text("OK")
-                        }
-                    },
-                    title = {
-                        Text(text = "Error")
-                    },
-                    text = {
-                        Text(text = errorMessage ?: "Unknown error occurred.")
-                    }
+                //TEXT DIBAWAH GRAFIK
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    text = "Grafik di atas adalah jumlah gula yang Anda konsumsi apabila Anda mengonsumsi makanan ini",
+                    style = CustomTheme.typography.p4,
+                    textAlign = TextAlign.Center
                 )
-            }
 
-            else -> {
-                //
+                Spacer(modifier = Modifier.height(12.dp))
+
+
+                //BOX SARAN
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .clip(
+                            RoundedCornerShape(16.dp)
+                        )
+                        .background(GreenLightHover),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFFB0E4D3)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Saran",
+                                style = CustomTheme.typography.p3,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                text = nutrition.advice,
+                                style = CustomTheme.typography.p4,
+                                textAlign = TextAlign.Justify
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //TEXT DIBAWAH GRAFIK
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    text = "Apakah kamu ingin menambahkan Donat Cokelat ke dalam riwayat gula harianmu?",
+                    style = CustomTheme.typography.p4,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MyButton(modifier = Modifier.weight(1f), onClick = {
+                        viewModel.addFood(nutrition, context, image)
+                    }, text = "YA")
+                    Spacer(modifier = Modifier.width(8.dp))
+
+
+                    MyButton(modifier = Modifier.weight(1f), onClick = {
+                        navController.navigate("homepage") {
+                            popUpTo(
+                                navController.currentBackStackEntry?.destination?.route ?: "homepage"
+                            ) {
+                                inclusive = true
+                            }
+                        }
+                    }, text = "TIDAK")
+                }
+            }
+            Spacer(modifier = Modifier.height(64.dp))
+        }
+
+        //LOADING AND PROSES
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (state) {
+                is MyState.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(NetralNormal.copy(0.4f)), contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = GreenNormal, modifier = Modifier.size(64.dp))
+                    }
+
+                }
+
+                is MyState.Success -> {
+                    LaunchedEffect(Unit) {
+                        delay(200)
+                        navController.navigate("homepage") {
+                            popUpTo(
+                                navController.currentBackStackEntry?.destination?.route ?: "homepage"
+                            ) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                }
+
+                is MyState.Error -> {
+                    val errorMessage = (state as MyState.Error).message
+                    AlertDialog(
+                        onDismissRequest = { },
+                        confirmButton = {
+                            Button(
+                                onClick = { viewModel.resetState() },
+                                colors = ButtonDefaults.buttonColors(
+                                    GreenNormal
+                                )
+                            ) {
+                                Text("OK")
+                            }
+                        },
+                        title = {
+                            Text(text = "Error")
+                        },
+                        text = {
+                            Text(text = errorMessage ?: "Unknown error occurred.")
+                        }
+                    )
+                }
+
+                else -> {
+                    //
+                }
             }
         }
     }

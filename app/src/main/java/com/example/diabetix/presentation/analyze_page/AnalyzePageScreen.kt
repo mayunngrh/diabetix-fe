@@ -194,7 +194,7 @@ fun AnalyzePageScreen(navController: NavController) {
 
             is MyState.Success -> {
                 LaunchedEffect(Unit) {
-                    delay(200)
+                    delay(2000)
                     navController.navigate("analyze_result/$encodedImagePath/$nutritionJson") {
                         popUpTo(navController.currentBackStackEntry?.destination?.route ?: "homepage") {
                             inclusive = true

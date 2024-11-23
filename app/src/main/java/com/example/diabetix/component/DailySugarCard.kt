@@ -27,15 +27,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.diabetix.R
+import com.example.diabetix.data.Tracker
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLight
 import com.example.diabetix.ui.theme.GreenNormal
 import com.example.diabetix.ui.theme.NetralNormal
+import com.example.diabetix.ui.theme.RedNormal
+import com.example.diabetix.ui.theme.YellowNormal
 
 @Composable
 fun DailySugarCard(
+    tracker: Tracker,
     onClickSugar:()->Unit
 ){
+    val date = formatDate(tracker.createdAt)
     ElevatedCard(
         modifier = Modifier
             .height(165.dp)
@@ -81,7 +86,7 @@ fun DailySugarCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    text = "26.7",
+                    text = tracker.totalGlucose.toString(),
                     style = CustomTheme.typography.h1,
                     fontWeight = FontWeight.Bold, color = GreenNormal,
                     textAlign = TextAlign.Center
@@ -103,18 +108,23 @@ fun DailySugarCard(
                         .height(24.dp)
                         .clip(RoundedCornerShape(24.dp))
                         .background(
-                            GreenNormal
+                            when(tracker.status){
+                                "Tinggi" -> RedNormal
+                                "Normal" -> YellowNormal
+                                "Rendah" -> GreenNormal
+                                else -> GreenNormal
+                            }
                         ), contentAlignment = Alignment.Center
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
-                        text = "Normal",
+                        text = tracker.status,
                         style = CustomTheme.typography.p4,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.White
                     )
                 }
-                Text(text = "17 Mei 2024", style = CustomTheme.typography.p4, fontSize = 10.sp, color = NetralNormal)
+                Text(text = date, style = CustomTheme.typography.p4, fontSize = 10.sp, color = NetralNormal)
             }
         }
     }

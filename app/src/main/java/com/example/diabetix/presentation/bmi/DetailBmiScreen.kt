@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,239 +33,224 @@ import coil.compose.AsyncImage
 import com.example.diabetix.R
 import com.example.diabetix.component.KategoriBMI
 import com.example.diabetix.component.RekomendasiAktivitasItem
+import com.example.diabetix.data.Bmi
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightActive
 import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
 
 @Composable
-fun DetailBmiScreen() {
-    Spacer(modifier = Modifier.height(12.dp))
-    Column(
-        Modifier
+fun DetailBmiScreen(
+    bmi: Bmi
+) {
+    LazyColumn(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp) // Space between items
     ) {
+        item {
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
-        //BOX BMI
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .clip(
-                    RoundedCornerShape(16.dp)
-                )
-                .background(GreenLightHover),
-            contentAlignment = Alignment.Center
-        ) {
-            Column {
+        // BOX BMI
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(GreenLightHover),
+                contentAlignment = Alignment.Center
+            ) {
+                Column {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color(0xFFB0E4D3)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "BMI",
+                            style = CustomTheme.typography.h2,
+                            fontWeight = FontWeight.Bold,
+                            color = GreenNormal
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = bmi.bmi.toString(),
+                            style = CustomTheme.typography.h1,
+                            fontWeight = FontWeight.Bold,
+                            color = GreenNormal,
+                            fontSize = 44.sp
+                        )
+                    }
+                }
+            }
+        }
+
+        // BOX TINGGI dan MASSA
+        item {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Tinggi
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
+                        .weight(1f)
+                        .wrapContentHeight()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFFB0E4D3)),
+                        .background(GreenLightHover),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "BMI",
-                        style = CustomTheme.typography.h2,
-                        fontWeight = FontWeight.Bold,
-                        color = GreenNormal
-                    )
+                    Column {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFFB0E4D3)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Tinggi",
+                                style = CustomTheme.typography.p2,
+                                fontWeight = FontWeight.Bold,
+                                color = GreenNormal
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = bmi.height.toString(),
+                                    style = CustomTheme.typography.h2,
+                                    fontWeight = FontWeight.Bold,
+                                    color = GreenNormal
+                                )
+                                Text(
+                                    text = "cm",
+                                    style = CustomTheme.typography.p4,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = GreenNormal
+                                )
+                            }
+                        }
+                    }
                 }
 
-                Column(
+                Spacer(modifier = Modifier.width(12.dp))
+
+                // Massa
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .weight(1f)
+                        .wrapContentHeight()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(GreenLightHover),
+                    contentAlignment = Alignment.Center
                 ) {
-                    //ANGKA BMI
-                    Text(
-                        text = "24.4",
-                        style = CustomTheme.typography.h1,
-                        fontWeight = FontWeight.Bold,
-                        color = GreenNormal,
-                        fontSize = 44.sp
-                    )
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        //BOX TINGGI dan MASSA
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            //TINGGi
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentHeight()
-                    .clip(
-                        RoundedCornerShape(16.dp)
-                    )
-                    .background(GreenLightHover),
-                contentAlignment = Alignment.Center
-            ) {
-                Column {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color(0xFFB0E4D3)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Tinggi",
-                            style = CustomTheme.typography.p2,
-                            fontWeight = FontWeight.Bold,
-                            color = GreenNormal
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        //ANGKA TINGGi
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFFB0E4D3)),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Text(
-                                text = "181",
-                                style = CustomTheme.typography.h2,
+                                text = "Massa",
+                                style = CustomTheme.typography.p2,
                                 fontWeight = FontWeight.Bold,
-                                color = GreenNormal,
-                            )
-                            Text(
-                                text = "cm",
-                                style = CustomTheme.typography.p4,
-                                fontWeight = FontWeight.SemiBold,
-                                color = GreenNormal,
+                                color = GreenNormal
                             )
                         }
-
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                }
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            //MASSA
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentHeight()
-                    .clip(
-                        RoundedCornerShape(16.dp)
-                    )
-                    .background(GreenLightHover),
-                contentAlignment = Alignment.Center
-            ) {
-                Column {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color(0xFFB0E4D3)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Massa",
-                            style = CustomTheme.typography.p2,
-                            fontWeight = FontWeight.Bold,
-                            color = GreenNormal
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        //ANGKA MASSA
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "80",
-                                style = CustomTheme.typography.h2,
-                                fontWeight = FontWeight.Bold,
-                                color = GreenNormal,
-                            )
-                            Text(
-                                text = "kg",
-                                style = CustomTheme.typography.p4,
-                                fontWeight = FontWeight.SemiBold,
-                                color = GreenNormal,
-                            )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = bmi.weight.toString(),
+                                    style = CustomTheme.typography.h2,
+                                    fontWeight = FontWeight.Bold,
+                                    color = GreenNormal
+                                )
+                                Text(
+                                    text = "kg",
+                                    style = CustomTheme.typography.p4,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = GreenNormal
+                                )
+                            }
                         }
-
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(36.dp))
+        // KATEGORI BMI
+        item {
+            KategoriBMI()
+        }
 
-        // KATEGORI BMI SECTION
-        KategoriBMI()
+        // INFORMATION BOX
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(GreenLightHover),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = "Hasil BMI menunjukkan bahwa kamu memiliki proporsional tubuh yang sangat baik. Tetap dijaga yah!!",
+                    style = CustomTheme.typography.p3,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
 
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        //INFORMATION BOX
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .background(GreenLightHover),
-            contentAlignment = Alignment.Center
-        ) {
+        // REKOMENDASI AKTIVITAS
+        item {
             Text(
-                modifier = Modifier.padding(16.dp),
-                text = "Hasil BMI menunjukkan bahwa kamu memiliki proporsional tubuh yang sangat baik. Tetap dijaga yah!!",
-                style = CustomTheme.typography.p3,
-                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Left,
+                text = "Rekomendasi Aktivitas",
+                style = CustomTheme.typography.p2,
+                fontWeight = FontWeight.Bold
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        //REKOMENDASI AKTIVITAS
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Left,
-            text = "Rekomendasi Aktivitas",
-            style = CustomTheme.typography.p2,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        //REKOMENDASI AKTIVITAS ITEM
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-        ) {
-            RekomendasiAktivitasItem()
-            RekomendasiAktivitasItem()
-            RekomendasiAktivitasItem()
-            RekomendasiAktivitasItem()
-            RekomendasiAktivitasItem()
-
+        item {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                RekomendasiAktivitasItem()
+                RekomendasiAktivitasItem()
+                RekomendasiAktivitasItem()
+                RekomendasiAktivitasItem()
+                RekomendasiAktivitasItem()
+            }
         }
-
-        Spacer(modifier = Modifier.height(50.dp))
-
     }
-
 }

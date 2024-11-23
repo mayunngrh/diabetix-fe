@@ -41,6 +41,7 @@ import coil.compose.AsyncImage
 import com.example.diabetix.R
 import com.example.diabetix.component.MyButton
 import com.example.diabetix.data.Missions
+import com.example.diabetix.navController
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
@@ -152,11 +153,7 @@ fun DoctorDetail(
 
             Spacer(modifier = Modifier.height(24.dp))
             MyButton(modifier = Modifier, onClick = {
-                    Toast.makeText(
-                        context,
-                        "Silahkan isi kotak centang terlebih dahulu!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                navController.navigate("doctor_reservation")
             }, text = "Reservasi")
             Spacer(modifier = Modifier.height(48.dp))
 

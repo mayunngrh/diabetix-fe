@@ -105,9 +105,10 @@ fun BmiCard(
                             when(bmi.status){
                                 "Underweight" -> GreenLightActive
                                 "Overweight" -> YellowNormal
-                                "Obesity Class I" -> YellowNormalActive
-                                "Obesity Class I" -> RedNormal
-                                "Obesity Class III" -> RedDarkActive
+                                "Normal" -> GreenNormal
+                                "Obesity I" -> YellowNormalActive
+                                "Obesity I" -> RedNormal
+                                "Obesity III" -> RedDarkActive
                                 else -> GreenNormal
                             }
 

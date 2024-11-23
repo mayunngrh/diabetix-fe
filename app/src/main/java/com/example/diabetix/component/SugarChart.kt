@@ -14,11 +14,17 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
+import com.example.diabetix.data.Tracker
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenNormal
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
-fun SugarChart(data: List<Pair<String, Float>>) {
+fun SugarChart(
+    listTracker: List<Tracker>
+) {
+    val data = formatData(listTracker)
     // Check if data is valid and has at least two points for drawing a line
     if (data.size < 2) return
 
@@ -102,3 +108,18 @@ fun SugarChart(data: List<Pair<String, Float>>) {
 }
 
 
+fun formatData(trackers: List<Tracker>): List<Pair<String, Int>> {
+    val inputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    val outputDateFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+
+    return trackers.mapNotNull { tracker ->
+        try {
+            val date = inputDateFormat.parse(tracker.createdAt)
+            val formattedDate = outputDateFormat.format(date)
+            Pair(formattedDate, tracker.totalGlucose)
+        } catch (e: Exception) {
+            // Jika ada error saat parsing tanggal, data tersebut diabaikan
+            null
+        }
+    }
+}

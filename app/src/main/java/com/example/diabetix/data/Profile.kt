@@ -18,14 +18,13 @@ data class Profile(
 data class Level(
     val id: Int,
     val name: String,
-    val totalExp: Int,
-
+    val totalExp: Int
 )
 
 data class Personalization(
     val userID: String,
     val gender: String,
     val age: Int,
-    val frequenceSport: Int,
+    val frequenceSport: String,
     val maxGlucose: Int,
 )

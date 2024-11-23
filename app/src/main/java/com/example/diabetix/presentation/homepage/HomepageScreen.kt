@@ -76,7 +76,11 @@ fun HomepageScreen(
     val articles by viewModel.articles.collectAsState()
     val misions by viewModel.missions.collectAsState()
     val currentBmi by viewModel.currentBmi.collectAsState()
+    val currentTracker by viewModel.currentTracker.collectAsState()
     val user by viewModel.user.collectAsState()
+
+//    print("NILAI CurrentTRACKER = $currentTracker")
+    print("NILAI USER SCREEN: $user")
 
 //    print("NILAI CURRENT BMI SCREEN: $currentBmi")
 
@@ -174,8 +178,10 @@ fun HomepageScreen(
                                 navController.navigate("bmi")
                             }
                         }
-                        DailySugarCard {
-                            navController.navigate("daily_sugar")
+                        currentTracker?.let{
+                            DailySugarCard(it) {
+                                navController.navigate("daily_sugar")
+                            }
                         }
                     }
                 }

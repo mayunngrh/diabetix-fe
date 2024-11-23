@@ -104,16 +104,7 @@ fun DoctorItem(
 
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        AsyncImage(modifier = Modifier.size(16.dp), model = R.drawable.ic_star, contentDescription = "")
-
                         Spacer(modifier = Modifier.width(4.dp))
-
-                        //RATING
-                        Text(
-                            text = "4,5",
-                            style = CustomTheme.typography.p4,
-                            maxLines = 1,
-                        )
                     }
 
                     Spacer(modifier = Modifier.height(4.dp))

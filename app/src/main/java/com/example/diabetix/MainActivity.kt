@@ -58,6 +58,7 @@ import com.example.diabetix.presentation.bmi.BmiScreen
 import com.example.diabetix.presentation.consultation.ConsultationPage
 import com.example.diabetix.presentation.daily_sugar.DailySugarScreen
 import com.example.diabetix.presentation.doctor_detail.DoctorDetail
+import com.example.diabetix.presentation.doctor_reservation.DoctorReservationScreen
 import com.example.diabetix.presentation.mission.MissionScreen
 import com.example.diabetix.presentation.mission_detail.ArticleDetailScreen
 import com.example.diabetix.presentation.mission_detail.MissionDetailScreen
@@ -290,7 +291,7 @@ class MainActivity : ComponentActivity() {
 
 
                             val imagePath = encodedImagePath?.let { Uri.decode(it) }
-                            if (imagePath != null) {
+                            if (imagePath != null && nutrition != null) {
                                 AnalyzeResultScreen(
                                     navController = navController,
                                     imagePath = imagePath,
@@ -332,6 +333,10 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("doctor_detail") {
                             DoctorDetail()
+                        }
+
+                        composable("doctor_reservation") {
+                            DoctorReservationScreen()
                         }
 
                     }

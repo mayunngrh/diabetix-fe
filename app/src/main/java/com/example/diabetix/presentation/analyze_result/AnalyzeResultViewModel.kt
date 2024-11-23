@@ -70,11 +70,12 @@ class AnalyzeResultViewModel @Inject constructor(
                         val request = AddFoodRequest(
                             foodName = nutrition.foodName,
                             foodImage = response.body()!!.url,
-                            glucose = nutrition.glucose,
+                            glucose = nutrition.glucose.toInt(),
                             calory = nutrition.calories,
                             fat = nutrition.fat,
                             protein = nutrition.protein,
-                            carbohydrate = nutrition.carbohydrate
+                            carbohydrate = nutrition.carbohydrate,
+                            indexGlycemic = nutrition.indexGlycemic
                         )
                         val response2 = apiService.addFood("Bearer $tokenValue",request)
                         _state.value = MyState.Success

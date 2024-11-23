@@ -1,6 +1,7 @@
 package com.example.diabetix.presentation.mission_detail
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,12 +21,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,14 +47,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.diabetix.R
 import com.example.diabetix.component.MyButton
 import com.example.diabetix.data.Article
+import com.example.diabetix.presentation.analyze_result.MyState
+import com.example.diabetix.presentation.article.ArticleViewModel
+import com.example.diabetix.presentation.article_detail.ArticleDetailViewModel
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenNormal
+import com.example.diabetix.ui.theme.NetralNormal
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -59,13 +72,18 @@ fun ArticleDetailScreen(
     article: Article
 ) {
     var convertDate = convertDate(article.date)
-    var isDone by remember {
-        mutableStateOf(false)
+
+    var isLiked by remember {
+        mutableStateOf(article.isLikedByCurrentUser)
     }
 
-    val context = LocalContext.current
-    val markDownText = article.body.trimIndent()
+    var likes by remember {
+        mutableStateOf(article.likes)
+    }
 
+    val markDownText = article.body.trimIndent()
+    val viewModel = hiltViewModel<ArticleDetailViewModel>()
+    val state by viewModel.state.collectAsState()
 
     Column(
         modifier = Modifier
@@ -82,7 +100,11 @@ fun ArticleDetailScreen(
                 contentDescription = ""
             )
 
-            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+            ) {
                 //HEADER SECTION
                 Box(
                     modifier = Modifier
@@ -189,15 +211,30 @@ fun ArticleDetailScreen(
                     horizontalArrangement = Arrangement.End
                 ) {
                     AsyncImage(
-                        modifier = Modifier.size(36.dp),
-                        model = R.drawable.ic_liked,
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clickable {
+                                if (isLiked) {
+                                    viewModel.deleteLikes(article.id)
+                                    isLiked = !isLiked
+                                    likes--
+                                } else {
+                                    viewModel.createLikes(article.id)
+                                    isLiked = !isLiked
+                                    likes++
+                                }
+                            },
+                        model = when (isLiked) {
+                            true -> R.drawable.ic_liked
+                            else -> R.drawable.ic_unliked
+                        },
                         contentDescription = ""
                     )
 
                     Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
-                        text = article.likes.toString(),
+                        text = likes.toString(),
                         style = CustomTheme.typography.h2,
                         color = GreenNormal,
                         fontWeight = FontWeight.Bold
@@ -208,6 +245,55 @@ fun ArticleDetailScreen(
             }
         }
 
+    }
+
+    //LOADING AND PROSES
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (state) {
+            is MyState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(NetralNormal.copy(0.4f)), contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = GreenNormal, modifier = Modifier.size(64.dp))
+                }
+
+            }
+
+            is MyState.Success -> {
+                LaunchedEffect(Unit) {
+                    delay(200)
+                }
+            }
+
+            is MyState.Error -> {
+                val errorMessage = (state as MyState.Error).message
+                AlertDialog(
+                    onDismissRequest = { },
+                    confirmButton = {
+                        Button(
+                            onClick = { viewModel.resetState() },
+                            colors = ButtonDefaults.buttonColors(
+                                GreenNormal
+                            )
+                        ) {
+                            Text("OK")
+                        }
+                    },
+                    title = {
+                        Text(text = "Error")
+                    },
+                    text = {
+                        Text(text = errorMessage ?: "Unknown error occurred.")
+                    }
+                )
+            }
+
+            else -> {
+                //
+            }
+        }
     }
 }
 

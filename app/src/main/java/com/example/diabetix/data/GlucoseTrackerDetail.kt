@@ -10,4 +10,5 @@ data class GlucoseTrackerDetail(
     val fat: Float,
     val protein: Float,
     val carbohydrate: Float,
+    val levelGlycemic:String
 )

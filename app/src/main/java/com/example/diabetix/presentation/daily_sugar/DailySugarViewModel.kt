@@ -1,36 +1,29 @@
-package com.example.diabetix.presentation.mission_detail
+package com.example.diabetix.presentation.daily_sugar
 
-import android.content.Context
-import android.graphics.Bitmap
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.diabetix.data.FoodNutrition
+import com.example.diabetix.data.Tracker
 import com.example.diabetix.data.remote.ApiService
-import com.example.diabetix.data.request.AddFoodRequest
-import com.example.diabetix.data.request.UpdateMissionRequest
 import com.example.diabetix.presentation.analyze_result.MyState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
 
 @HiltViewModel
-class MissionDetailViewModel @Inject constructor(
+class DailySugarViewModel @Inject constructor(
     private val apiService: ApiService,
     private val dataStore: DataStore<Preferences>
-): ViewModel(){
+):ViewModel(){
+
+    private val TOKEN = stringPreferencesKey("token")
 
     private val _state = MutableStateFlow<MyState>(MyState.Idle)
     val state: StateFlow<MyState> = _state
@@ -38,40 +31,45 @@ class MissionDetailViewModel @Inject constructor(
     val token: Flow<String> = dataStore.data
         .map { preferences -> preferences[TOKEN] ?: "" }
 
+    private val _currentTracker = MutableStateFlow<Tracker?>(null)
+    val currentTracker: StateFlow<Tracker?> = _currentTracker
 
-    private val TOKEN = stringPreferencesKey("token")
-    private val ID = stringPreferencesKey("id")
+    private val _historyTracker = MutableStateFlow<List<Tracker>?>(emptyList())
+    val historyTracker: StateFlow<List<Tracker>?> = _historyTracker
+
+    private val _sevenLatestTracker = MutableStateFlow<List<Tracker>?>(emptyList())
+    val sevenLatestTracker: StateFlow<List<Tracker>?> = _sevenLatestTracker
 
 
-    fun resetState(){
-        _state.value = MyState.Idle
+    init{
+        fetchTracker()
     }
 
-    fun updateMission(missionId:Int) {
+    private fun fetchTracker() {
         _state.value = MyState.Loading
         viewModelScope.launch {
             try {
-                val tokenValue = token.first()
-
-                val response = apiService.updateMissionStatus("Bearer $tokenValue",missionId)
+                val token = token.first()
+                val response = apiService.getAllTrackers("Bearer $token")
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        println("CHECK KONDISI LOGIN: 1")
                         _state.value = MyState.Success
-
+                        _currentTracker.value = response.body()?.result?.currentTracker
+                        _historyTracker.value = response.body()?.result?.trackers
+                        _sevenLatestTracker.value = response.body()?.result?.sevenLatestTrackers
+                        print("KONDISI TRACKER BERHASIL")
                     } ?: run {
-                        println("CHECK KONDISI LOGIN: 2")
                         _state.value = MyState.Error("Empty response body")
+                        print("KONDISI TRACKER GAGAL1")
                     }
                 } else {
-                    println("CHECK KONDISI LOGIN: 3")
-                    _state.value = MyState.Error("Periksa Kembali Jaringan Anda")
+                    print("KONDISI TRACKER GAGAL2")
+                    _state.value = MyState.Error("Fetch Data failed")
                 }
             } catch (e: Exception) {
-                println("CHECK KONDISI LOGIN: 4")
+                print("KONDISI TRACKER GAGAL3: ${e.message}")
                 _state.value = MyState.Error(e.message ?: "Unknown error")
             }
         }
     }
-
 }

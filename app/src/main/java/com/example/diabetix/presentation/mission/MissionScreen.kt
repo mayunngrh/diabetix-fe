@@ -1,12 +1,16 @@
 package com.example.diabetix.presentation.mission
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -54,20 +58,37 @@ fun MissionScreen(navController: NavController) {
                     .padding(bottom = 24.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                Icon(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .align(Alignment.BottomStart),
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = "",
-                    tint = GreenNormal
-                )
                 Text(
                     text = "Misi",
                     style = CustomTheme.typography.h2,
                     fontWeight = FontWeight.Bold,
                     color = GreenNormal
                 )
+                Row(
+                    Modifier
+                        .padding(horizontal = 24.dp)
+                        .align(Alignment.BottomStart)) {
+                    Icon(
+                        modifier = Modifier
+                            .size(32.dp)
+
+                            .clickable {
+                                navController.navigate("homepage") {
+                                    popUpTo(
+                                        navController.currentBackStackEntry?.destination?.route
+                                            ?: "homepage"
+                                    ) {
+                                        inclusive = true
+                                    }
+                                }
+                            },
+                        imageVector = Icons.Default.KeyboardArrowLeft,
+                        contentDescription = "",
+                        tint = GreenNormal
+                    )
+
+                }
+
             }
 
             // TabRow
@@ -112,8 +133,7 @@ fun MissionScreen(navController: NavController) {
                     println("ALL " + mission.size)
                 }
 
-                1 ->FinishedMissionScreen(finishedMission, navController)
-
+                1 -> FinishedMissionScreen(finishedMission, navController)
 
 
             }

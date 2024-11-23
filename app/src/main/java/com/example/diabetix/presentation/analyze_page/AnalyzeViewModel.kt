@@ -79,6 +79,7 @@ class AnalyzeViewModel @Inject constructor(
                     val gson = Gson()
                     _nutrition.value = gson.toJson(foodNutrition)
 
+                    println("nilai nutrition value ${nutrition.value}")
                     _state.value = MyState.Success
                 } else {
                     _state.value = MyState.Error("Request failed, periksa jaringan internet anda!")

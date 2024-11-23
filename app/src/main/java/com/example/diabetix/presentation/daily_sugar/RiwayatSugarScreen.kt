@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.diabetix.component.GulaHarianItem
 import com.example.diabetix.component.SugarChart
+import com.example.diabetix.data.Tracker
 import com.example.diabetix.ui.theme.CustomTheme
 import com.example.diabetix.ui.theme.GreenLight
 import com.example.diabetix.ui.theme.GreenLightActive
@@ -37,63 +40,75 @@ import com.example.diabetix.ui.theme.GreenLightHover
 import com.example.diabetix.ui.theme.GreenNormal
 
 @Composable
-fun RiwayatSugarScreen(data: List<Pair<String, Float>>) {
-    Column(
-        Modifier
+fun RiwayatSugarScreen(
+    sevenLatestTracker: List<Tracker>,
+    historyTracker: List<Tracker>
+) {
+    LazyColumn(
+        modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(12.dp))
-        //TEXT PEMBUKA
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            text = "Grafik Konsumsi Gula 7 Hari Terakhir",
-            style = CustomTheme.typography.p2,
-            fontWeight = FontWeight.Bold
-        )
+        item {
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        // TEXT PEMBUKA
+        item {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                text = "Grafik Konsumsi Gula 7 Hari Terakhir",
+                style = CustomTheme.typography.p2,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
-        //Chart 7 Hari terakhir
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(270.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(GreenLight)
-        ) {
-            Column {
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+        }
 
-                Spacer(modifier = Modifier.height(12.dp))
+        // CHART 7 HARI TERAKHIR
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(270.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(GreenLight)
+            ) {
+                Column {
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                //NAMA BULAN
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = "September",
-                    style = CustomTheme.typography.p2,
-                    fontWeight = FontWeight.Bold,
-                    color = GreenNormal
-                )
+                    // NAMA BULAN
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        text = "September",
+                        style = CustomTheme.typography.p2,
+                        fontWeight = FontWeight.Bold,
+                        color = GreenNormal
+                    )
 
-                //CHART
-                SugarChart(data = data)
+                    // CHART
+                    SugarChart(listTracker = sevenLatestTracker)
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+        }
 
+        // GULA HARIAN ITEMS
+        items(historyTracker) { tracker ->
+            GulaHarianItem(tracker = tracker)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
-        //GULA HARIAN ITEM
-        GulaHarianItem()
-
-        GulaHarianItem()
-
-        GulaHarianItem()
-
-        Spacer(modifier = Modifier.height(50.dp))
-
+        item {
+            Spacer(modifier = Modifier.height(50.dp))
+        }
     }
 }

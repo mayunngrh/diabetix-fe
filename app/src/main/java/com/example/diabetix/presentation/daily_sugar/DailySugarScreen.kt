@@ -19,6 +19,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.diabetix.R
@@ -37,7 +39,14 @@ import com.example.diabetix.ui.theme.GreenNormal
 
 @Composable
 fun DailySugarScreen(navController: NavController) {
+    val viewModel = hiltViewModel<DailySugarViewModel>()
+    val currentTracker by viewModel.currentTracker.collectAsState()
+    val historyTracker by viewModel.historyTracker.collectAsState()
+    val sevenLatestTracker by viewModel.sevenLatestTracker.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
+
+    println("NILAI CURR TRACK : $currentTracker")
+    println("NILAI HISTORY TRACK : $historyTracker")
 
     val dummyDataChart = listOf(
         Pair("15/9", 70f),
@@ -52,7 +61,6 @@ fun DailySugarScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         Box(
             modifier = Modifier
@@ -122,8 +130,13 @@ fun DailySugarScreen(navController: NavController) {
 
 
         when (selectedTab) {
-            0 -> DetailSugarScreen()
-            1 -> RiwayatSugarScreen(dummyDataChart)
+            0 ->if(currentTracker != null){
+                DetailSugarScreen(currentTracker!!)
+
+            }
+            1 -> if(sevenLatestTracker != null && historyTracker!=null){
+                RiwayatSugarScreen(sevenLatestTracker!!, historyTracker!!)
+            }
         }
     }
 }
