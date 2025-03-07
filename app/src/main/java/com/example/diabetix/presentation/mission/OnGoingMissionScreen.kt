@@ -72,7 +72,7 @@ fun OnGoingMissionScreen(
 
         // CHART TARGET HARIAN
         item {
-            MissionSemiCircularChart(currentValue = currentFinished, targetValue = targetSize)
+            MissionSemiCircularChart(currentValue = currentFinished , targetValue = targetSize)
         }
 
         // TEXT DIBAWAH CHART

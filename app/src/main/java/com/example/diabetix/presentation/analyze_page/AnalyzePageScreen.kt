@@ -66,15 +66,9 @@ fun AnalyzePageScreen(navController: NavController) {
 
     var encodedImagePath by remember { mutableStateOf("") }
 
-
-
-
     val viewModel = hiltViewModel<AnalyzeViewModel>()
     val state by viewModel.state.collectAsState()
     val nutritionJson by viewModel.nutrition.collectAsState()
-
-
-
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
